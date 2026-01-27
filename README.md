@@ -1,9 +1,6 @@
 # 🎓 University Workshop Registration System
 > ระบบลงทะเบียนอบรมและเวิร์กชอปออนไลน์ (Online Workshop Registration System)
 
-![Project Status](https://img.shields.io/badge/Status-In%20Development-yellow?style=flat-square)
-![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
-
 ## 📖 Project Overview (ภาพรวมโครงการ)
 **University Workshop Registration System** เป็นเว็บแอปพลิเคชันแบบ Full-Stack ที่พัฒนาขึ้นเพื่อแก้ปัญหาความยุ่งยากในการลงทะเบียนอบรมแบบเดิม โดยเปลี่ยนมาใช้ระบบออนไลน์ที่เป็นศูนย์กลาง ช่วยให้การจัดการข้อมูลเป็นระบบ ลดความซ้ำซ้อน และอำนวยความสะดวกให้กับทั้งผู้จัดงานและนักศึกษา
 
@@ -20,7 +17,6 @@
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![DaisyUI](https://img.shields.io/badge/DaisyUI-5A0EF8?style=for-the-badge&logo=daisyui&logoColor=white)
 
 ### Backend (หลังบ้าน)
 ![NodeJS](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
