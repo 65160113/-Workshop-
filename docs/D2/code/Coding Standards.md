@@ -121,38 +121,49 @@ const WORKSHOP_STATUS = {
 
 # 3️⃣ Code Structure
 
-## Backend Structure
-server/
-controllers/
-services/
-models/
-routes/
-middleware/
-config/
-utils/
+## 3.1 Backend Structure
+**Path:** `backend/src/`
 
+```text
+backend/
+├── database/
+│   ├── schema.sql       
+│   └── seeds.sql         
+├── src/
+│   ├── config/          # การตั้งค่าระบบ (Database, Env)
+│   ├── controllers/     # รับ Request และส่ง Response
+│   ├── services/        # Business Logic หลัก
+│   ├── repositories/    # การเชื่อมต่อ Database (SQL Queries)
+│   ├── models/          # Data Models
+│   ├── middlewares/     # Auth, Validation
+│   ├── routes/          # API Endpoints
+│   └── utils/           # Helper Functions
+└── server.js            # Entry Point (จุดเริ่มต้นของระบบ)
+```
 
 Rules:
-- route → controller → service → model
-- ห้าม query database ใน route
-- business logic อยู่ service เท่านั้น
+- Flow: Route → Middleware → Controller → Service → Repository → Database
+- ❌ ห้าม Query Database ใน Controller หรือ Service โดยตรง
+- ✅ ต้อง Query ผ่าน Repository เท่านั้น (Separation of Concerns)
 
 ---
 
-## Frontend Structure
-src/
-pages/
-components/
-services/
-hooks/
-layouts/
-utils/
+## 3.2 Frontend Structure
+**Path:** `frontend/src/`
 
+```text
+frontend/src/
+├── components/      # Reusable UI (Button, Card, Navbar)
+├── pages/           # หน้าเว็บหลัก (Login, Dashboard, WorkshopDetail)
+├── services/        # API Calls (Axios Instances)
+├── context/         # Global State (AuthContext)
+└── utils/           # Utility Functions (FormatDate, Validators)
+```
 
 Rules:
-- 1 component ต่อ 1 file
-- API calls อยู่ services
-- ใช้ functional components
+- Component: 1 ไฟล์ต่อ 1 Component 
+- Service: รวม API Calls ไว้ที่ services/
+- Context: ใช้สำหรับ State ที่ใช้ร่วมกันทั้งแอป
 
 ---
 
