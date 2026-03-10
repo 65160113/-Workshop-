@@ -1,7 +1,8 @@
 // frontend/src/pages/RegisterPage.jsx
 import { useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
+import Navbar from "../components/Navbar"; 
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -43,23 +44,10 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-base-100">
-      <header className="navbar bg-sky-200 shadow-sm px-6 h-16">
-        <div className="flex-1">
-          <Link
-            to="/"
-            className="text-xl font-bold text-sky-900 hover:text-sky-700"
-          >
-            WORKSHOP REG.
-          </Link>
-        </div>
-        <div className="text-sky-900 text-lg font-semibold">
-          <Link to="/login" className="hover:text-sky-700 transition-colors">
-            Login
-          </Link>
-        </div>
-      </header>
+      {/* 👇 2. เรียกใช้งาน Navbar แทน <header> ของเดิม 👇 */}
+      <Navbar />
 
-      <main className="flex-grow flex items-center justify-center p-4">
+      <main className="flex-grow flex items-center justify-center p-4 py-12">
         <div className="card w-full max-w-md bg-sky-100 shadow-2xl border border-sky-200 p-8 rounded-2xl">
           <h1 className="text-center text-3xl font-bold text-sky-900 mb-6">
             Register
@@ -88,7 +76,7 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* ช่อง First Name และ Last Name (ให้อยู่บรรทัดเดียวกันเพื่อประหยัดพื้นที่แนวตั้ง) */}
+            {/* ช่อง First Name และ Last Name */}
             <div className="flex gap-4">
               <div className="form-control w-1/2">
                 <label className="label p-1">
@@ -136,7 +124,7 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* ช่อง Password (แยกมาอยู่เต็มบรรทัด) */}
+            {/* ช่อง Password */}
             <div className="form-control w-full">
               <label className="label p-1">
                 <span className="label-text font-semibold text-sky-800">
@@ -152,7 +140,7 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* ช่อง Confirm Password (ต่อท้ายด้านล่าง) */}
+            {/* ช่อง Confirm Password */}
             <div className="form-control w-full">
               <label className="label p-1">
                 <span className="label-text font-semibold text-sky-800">

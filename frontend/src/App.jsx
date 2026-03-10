@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import WorkshopDetailPage from "./pages/WorkshopDetailPage";
+import MyAccountPage from "./pages/MyAccountPage";
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
         {/* ถ้าเข้า /login ให้โชว์หน้า LoginPage */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/workshop/:id" element={<WorkshopDetailPage />} />
+        <Route path="/my-account" element={<MyAccountPage />} />
       </Routes>
     </BrowserRouter>
   );
