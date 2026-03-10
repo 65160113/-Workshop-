@@ -5,7 +5,7 @@
 
 ## 💻 System Requirements (ความต้องการของระบบ)
 * **OS:** Windows 10+ / macOS / Linux 
-* **RAM:** 8GB minimum [cite: 1739]
+* **RAM:** 8GB minimum 
 * **Tools:**
   * Node.js (v18 หรือสูงกว่า) 
   * MySQL Server (v8.0)
