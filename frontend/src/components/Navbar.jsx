@@ -1,23 +1,34 @@
 // frontend/src/components/Navbar.jsx
 import { useState, useEffect } from "react";
-// 1. นำเข้า useLocation เพิ่มเข้ามา
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const location = useLocation(); // 2. เรียกใช้ useLocation เพื่อดูว่าตอนนี้อยู่หน้า path ไหน
+  const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // 🌟 1. สร้างกล่องเก็บยศ (Role) ของคนที่ล็อคอิน
+  const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
+
+      // 🌟 2. แอบแกะ Token เพื่อดูว่าคนนี้ยศอะไร
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        setUserRole(payload.role); // เก็บยศใส่กล่องไว้
+      } catch (error) {
+        console.error("Token decoding error:", error);
+      }
     }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
+    setUserRole(null); // 🌟 เคลียร์ยศทิ้งตอนล็อคเอาท์ด้วย
     alert("👋 ออกจากระบบเรียบร้อยแล้วครับ");
     navigate("/");
   };
@@ -29,9 +40,19 @@ export default function Navbar() {
           WORKSHOP REG.
         </Link>
       </div>
-      <div className="text-sky-900 text-lg font-semibold">
+      <div className="text-sky-900 text-lg font-semibold flex items-center">
         {isLoggedIn ? (
           <>
+            {/* 🌟 3. ปุ่มเวทมนตร์: โชว์เฉพาะ Admin หรือ Organizer เท่านั้น */}
+            {(userRole === "admin" || userRole === "organizer") && (
+              <Link
+                to="/create-workshop"
+                className="mr-6 text-sky-700 hover:text-sky-900 transition-colors font-bold"
+              >
+                ➕ Create Workshop
+              </Link>
+            )}
+
             <Link
               to="/my-account"
               className="hover:text-sky-700 transition-colors mr-4"
@@ -46,10 +67,9 @@ export default function Navbar() {
             </button>
           </>
         ) : (
-          /* 3. เช็คเงื่อนไขตาม URL ปัจจุบัน (location.pathname) */
+          /* ส่วนของการเช็ค URL หน้า Login / Register ของเดิม (ไม่แตะต้อง) */
           <>
             {location.pathname === "/login" ? (
-              /* ถ้าอยู่หน้า Login ให้โชว์แค่ปุ่ม Register */
               <Link
                 to="/register"
                 className="hover:text-sky-700 transition-colors"
@@ -57,7 +77,6 @@ export default function Navbar() {
                 Register
               </Link>
             ) : location.pathname === "/register" ? (
-              /* ถ้าอยู่หน้า Register ให้โชว์แค่ปุ่ม Login */
               <Link
                 to="/login"
                 className="hover:text-sky-700 transition-colors"
@@ -65,7 +84,6 @@ export default function Navbar() {
                 Login
               </Link>
             ) : (
-              /* ถ้าอยู่หน้าอื่นๆ (เช่น หน้า Home) ให้โชว์ทั้งคู่ */
               <>
                 <Link
                   to="/login"

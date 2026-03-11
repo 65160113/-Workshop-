@@ -22,4 +22,16 @@ const verifyToken = (req, res, next) => {
   );
 };
 
-module.exports = { verifyToken };
+const verifyRoles = (...allowedRoles) => {
+  return (req, res, next) => {
+    // ถ้าไม่มีข้อมูล user หรือ Role ไม่ตรงกับที่อนุญาต
+    if (!req.user || !allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({
+        message: "⛔ Access Denied: คุณไม่มีสิทธิ์เข้าถึงในส่วนนี้ครับ",
+      });
+    }
+    next(); // ถ้าเป็น admin หรือ organizer ก็ผ่านได้!
+  };
+};
+
+module.exports = { verifyToken , verifyRoles };

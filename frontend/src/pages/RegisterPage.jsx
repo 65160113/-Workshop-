@@ -47,7 +47,7 @@ export default function RegisterPage() {
       {/* 👇 2. เรียกใช้งาน Navbar แทน <header> ของเดิม 👇 */}
       <Navbar />
 
-      <main className="flex-grow flex items-center justify-center p-4 py-12">
+      <main className="grow flex items-center justify-center p-4 py-12">
         <div className="card w-full max-w-md bg-sky-100 shadow-2xl border border-sky-200 p-8 rounded-2xl">
           <h1 className="text-center text-3xl font-bold text-sky-900 mb-6">
             Register
