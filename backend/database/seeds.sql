@@ -29,9 +29,9 @@ INSERT INTO users (username, password_hash, email, first_name, last_name, role, 
 ('std02', '$2b$10$X7...', 'student2@univ.ac.th', 'Yaya', 'Urassaya', 'student', 2);
 
 -- 3. Insert Workshops
-INSERT INTO workshops (title, description, start_time, end_time, max_seats, meeting_url, status, organizer_id, category_id, platform_id) VALUES
-('Intro to React', 'Learn React hooks and components', '2026-03-01 09:00:00', '2026-03-01 16:00:00', 50, 'https://zoom.us/j/123', 'approved', 2, 1, 1),
-('English for Career', 'Resume writing workshop', '2026-03-05 13:00:00', '2026-03-05 15:00:00', 30, 'Room IF-404', 'pending', 2, 3, 4);
+INSERT INTO workshops (title, description, speaker_name, start_time, end_time, max_seats, meeting_url, status, organizer_id, category_id, platform_id) VALUES
+('Intro to React', 'Learn React hooks and components', 'อ.สมชาย ใจดี', '2026-03-25 09:00:00', '2026-03-25 16:00:00', 50, 'https://zoom.us/j/123', 'approved', 2, 1, 1),
+('English for Career', 'Resume writing workshop', 'Mr. John Smith', '2026-03-28 13:00:00', '2026-03-28 15:00:00', 30, 'Room IF-404', 'pending', 2, 3, 4);
 
 -- 4. Insert Enrollments
 INSERT INTO enrollments (user_id, workshop_id) VALUES

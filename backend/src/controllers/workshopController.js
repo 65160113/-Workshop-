@@ -6,15 +6,16 @@ const { pool } = require("../config/db.config");
 class WorkshopController {
   async getAllWorkshops(req, res) {
     try {
-      // 2. เปลี่ยนจาก db.query เป็น pool.query
+      // 🌟 อัปเกรด SQL: เพิ่ม enrolled_count สำหรับหน้า Home ด้วย!
       const [workshops] = await pool.query(`
-        SELECT workshop_id as id, 
-               title as name, 
-               COALESCE(location_detail, meeting_url, 'รอประกาศสถานที่') as location, 
-               DATE_FORMAT(start_time, '%d %M %Y') as date, 
-               max_seats as seats 
-        FROM workshops 
-        ORDER BY start_time ASC
+        SELECT w.workshop_id as id, 
+               w.title as name, 
+               COALESCE(w.location_detail, w.meeting_url, 'รอประกาศสถานที่') as location, 
+               DATE_FORMAT(w.start_time, '%d %M %Y') as date, 
+               w.max_seats as seats,
+               (SELECT COUNT(*) FROM enrollments e WHERE e.workshop_id = w.workshop_id) as enrolled_count
+        FROM workshops w 
+        ORDER BY w.start_time ASC
       `);
 
       res.status(200).json(workshops);
@@ -29,18 +30,20 @@ class WorkshopController {
     try {
       const { id } = req.params; // รับ ID มาจาก URL
 
+      // 🌟 อัปเกรดคำสั่ง SQL: เพิ่มการนับยอดคนลงทะเบียน (enrolled_count)
       const [workshops] = await pool.query(
         `
-        SELECT workshop_id as id, 
-               title as name, 
-               description,
-               speaker_name as speaker,
-               COALESCE(location_detail, meeting_url, 'รอประกาศสถานที่') as location, 
-               DATE_FORMAT(start_time, '%d %M %Y') as date, 
-               CONCAT(DATE_FORMAT(start_time, '%H:%i'), ' - ', DATE_FORMAT(end_time, '%H:%i')) as time,
-               max_seats as seats 
-        FROM workshops 
-        WHERE workshop_id = ?
+        SELECT w.workshop_id as id, 
+               w.title as name, 
+               w.description,
+               w.speaker_name as speaker,
+               COALESCE(w.location_detail, w.meeting_url, 'รอประกาศสถานที่') as location, 
+               DATE_FORMAT(w.start_time, '%d %M %Y') as date, 
+               CONCAT(DATE_FORMAT(w.start_time, '%H:%i'), ' - ', DATE_FORMAT(w.end_time, '%H:%i')) as time,
+               w.max_seats as seats,
+               (SELECT COUNT(*) FROM enrollments e WHERE e.workshop_id = w.workshop_id) as enrolled_count
+        FROM workshops w
+        WHERE w.workshop_id = ?
       `,
         [id],
       );
@@ -68,26 +71,31 @@ class WorkshopController {
         speaker,
         seats,
         description,
+        categoryId,
+        platformId,
       } = req.body;
 
-      if (!name || !date || !startTime || !location || !seats) {
+      if (
+        !name ||
+        !date ||
+        !startTime ||
+        !location ||
+        !seats ||
+        !categoryId ||
+        !platformId
+      ) {
         return res
           .status(400)
-          .json({ message: "กรุณากรอกข้อมูลสำคัญให้ครบถ้วน" });
+          .json({ message: "กรุณากรอกข้อมูลสำคัญและเลือกตัวเลือกให้ครบถ้วน" });
       }
 
       // 2. แปลงวันที่และเวลาให้เป็น DATETIME ของ MySQL (YYYY-MM-DD HH:MM:SS)
-      // เอาวันที่มาต่อกับเวลา แล้วเติมวินาที :00 เข้าไป
       const start_time_db = `${date} ${startTime}:00`;
-
-      // ถ้าไม่มีเวลาจบ ให้ตีเนียนใช้เวลาเดียวกับตอนเริ่มไปก่อน
       const end_time_db = endTime ? `${date} ${endTime}:00` : start_time_db;
 
-      // 3. กำหนดค่าเริ่มต้นสำหรับช่องที่จำเป็น (เดี๋ยวเราค่อยมาเชื่อมกับระบบ Login ทีหลัง)
+      // 3. กำหนดค่าเริ่มต้นสำหรับช่องที่จำเป็น
       const status = "pending"; // หรือ 'approved'
-      const organizer_id = 2; // ยืม ID เลข 2 ตามในรูปไปก่อน
-      const category_id = 1;
-      const platform_id = 1;
+      const organizer_id = req.user.id;
 
       // 4. สั่งร่ายเวทย์ SQL ให้ตรงกับชื่อคอลัมน์ในรูปเป๊ะๆ!
       const [result] = await pool.execute(
@@ -104,8 +112,8 @@ class WorkshopController {
           location,
           status,
           organizer_id,
-          category_id,
-          platform_id,
+          categoryId,
+          platformId,
         ],
       );
 
