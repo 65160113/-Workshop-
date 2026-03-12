@@ -1,8 +1,8 @@
 // frontend/src/pages/LoginPage.jsx
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar"; 
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -10,23 +10,32 @@ export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState("");
 
   const navigate = useNavigate();
+  const location = useLocation();
+  // แกะกระเป๋าดูว่ามีพิกัดแนบมาไหม ถ้าไม่มีให้ตั้งค่าเริ่มต้นเป็น "/" (หน้า Home)
+  const from = location.state?.from || "/";
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    console.log("🚨 1. ปุ่มทำงานแล้ว! กำลังจะล็อคอินด้วย:", username); // เช็คว่าปุ่มกดติดไหม
     setErrorMsg("");
 
     try {
+      console.log("📡 2. กำลังส่งข้อมูลไปหาหลังบ้าน...");
       const res = await axios.post("http://localhost:3000/api/auth/login", {
         username,
         password,
       });
 
+      console.log("✅ 3. หลังบ้านตอบกลับมาแล้ว! ข้อมูล:", res.data);
       const token = res.data.token;
       localStorage.setItem("token", token);
+      console.log("💾 4. เซฟ Token ลงเครื่องสำเร็จ!");
 
-      alert("🎉 เข้าสู่ระบบสำเร็จ!");
-      navigate("/");
+      // ลบ alert ทิ้งไปเลยครับ เพื่อตัดปัญหาเบราว์เซอร์บล็อค
+      console.log("🚀 5. กำลังจะวาร์ปไปที่:", from);
+      navigate(from);
     } catch (err) {
+      console.error("❌ 6. พังจ้าาา เจอ Error:", err);
       setErrorMsg(
         err.response?.data?.message || "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้",
       );
@@ -35,7 +44,6 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-base-100">
-      {/* 2. เสียบ Navbar แทนที่ <header> ยาวๆ อันเก่าเลยครับ! */}
       <Navbar />
 
       {/* Main Content (Centered Login Card) */}
@@ -87,10 +95,22 @@ export default function LoginPage() {
             <div className="form-control mt-8">
               <button
                 type="submit"
-                className="btn bg-sky-600 text-white hover:bg-sky-700 w-full rounded-full text-lg"
+                className="btn bg-sky-600 text-white hover:bg-sky-700 w-full rounded-full text-lg shadow-md border-none"
               >
                 Login
               </button>
+            </div>
+
+            {/* 👇 ย้ายข้อความ "สมัครสมาชิก" มาไว้ตรงนี้ครับ (ใต้ปุ่ม Login) 👇 */}
+            <div className="text-center mt-4 text-sm text-sky-800">
+              ยังไม่มีบัญชีใช่ไหม?{" "}
+              <Link
+                to="/register"
+                state={{ from: from }} // แนบพิกัดไปหน้า Register
+                className="text-sky-600 font-bold hover:text-sky-800 transition underline"
+              >
+                สมัครสมาชิกเลย!
+              </Link>
             </div>
           </form>
         </div>

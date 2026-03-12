@@ -6,6 +6,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const from = location.state?.from || "/";
 
   // 🌟 1. สร้างกล่องเก็บยศ (Role) ของคนที่ล็อคอิน
   const [userRole, setUserRole] = useState(null);
@@ -72,6 +73,7 @@ export default function Navbar() {
             {location.pathname === "/login" ? (
               <Link
                 to="/register"
+                state={{ from: from }}
                 className="hover:text-sky-700 transition-colors"
               >
                 Register
@@ -79,6 +81,7 @@ export default function Navbar() {
             ) : location.pathname === "/register" ? (
               <Link
                 to="/login"
+                state={{ from: from }}
                 className="hover:text-sky-700 transition-colors"
               >
                 Login
@@ -87,6 +90,7 @@ export default function Navbar() {
               <>
                 <Link
                   to="/login"
+                  state={{ from: from }}
                   className="hover:text-sky-700 transition-colors"
                 >
                   Login
@@ -94,6 +98,7 @@ export default function Navbar() {
                 <span className="mx-2 text-sky-600">|</span>
                 <Link
                   to="/register"
+                  state={{ from: from }}
                   className="hover:text-sky-700 transition-colors"
                 >
                   Register

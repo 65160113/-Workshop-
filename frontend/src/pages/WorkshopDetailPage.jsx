@@ -1,6 +1,6 @@
 // frontend/src/pages/WorkshopDetailPage.jsx
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom"; 
+import { useParams, useNavigate, useLocation } from "react-router-dom"; 
 import axios from "axios";
 import Navbar from "../components/Navbar"; 
 
@@ -9,8 +9,17 @@ export default function WorkshopDetailPage() {
   const navigate = useNavigate();
   const [workshop, setWorkshop] = useState(null);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
   useEffect(() => {
+    // 👇 1. เพิ่มยามดักหน้าประตูก่อนเลย! 👇
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login", { state: { from: location.pathname } });
+      return; // สั่งเบรกหัวทิ่ม! ไม่ต้องไปดึงข้อมูลจากหลังบ้านต่อ
+    }
+
+    // 2. ถ้ามี Token ค่อยวิ่งไปดึงข้อมูลตามปกติ
     const fetchDetail = async () => {
       try {
         const res = await axios.get(
@@ -24,7 +33,7 @@ export default function WorkshopDetailPage() {
       }
     };
     fetchDetail();
-  }, [id]);
+  }, [id, navigate, location.pathname]);
 
   const handleRegisterClick = async () => {
     // 👇 เช็ค Token สดๆ ตอนกดปุ่มเลยครับ ไม่ต้องพึ่ง State แล้ว
@@ -75,7 +84,6 @@ export default function WorkshopDetailPage() {
             Workshop : {workshop.name}
           </h1>
 
-          {/* กล่องสีขาวใส่รายละเอียดให้อ่านง่าย */}
           <div className="bg-white rounded-xl p-8 shadow-sm mb-8 text-sky-900 border border-sky-100">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 text-lg mb-8">
               <p>
@@ -94,9 +102,17 @@ export default function WorkshopDetailPage() {
                 <span className="font-bold w-24 inline-block">Speaker</span> :{" "}
                 {workshop.speaker || "รอประกาศ"}
               </p>
+
+              {/* 👇 1. อัปเกรดการแสดงผลที่นั่งตรงนี้ครับ 👇 */}
               <p>
                 <span className="font-bold w-24 inline-block">Seats</span> :{" "}
-                {workshop.seats} ท่าน
+                {/* คำนวณที่นั่งคงเหลือ: จำนวนสูงสุด ลบด้วย คนที่ลงไปแล้ว */}
+                <span className="text-sky-700 font-semibold">
+                  เหลือ {workshop.seats - (workshop.enrolled_count || 0)} ที่
+                </span>
+                <span className="text-gray-400 text-sm ml-2">
+                  (จากทั้งหมด {workshop.seats} ที่นั่ง)
+                </span>
               </p>
             </div>
 
@@ -110,14 +126,25 @@ export default function WorkshopDetailPage() {
             </div>
           </div>
 
-          {/* ปุ่ม Register สีฟ้าเข้มทรงกลม */}
+          {/* 👇 2. อัปเกรดปุ่ม Register (ล็อคปุ่มถ้าที่นั่งเต็ม!) 👇 */}
           <div className="flex justify-center mt-4">
-            <button
-              onClick={handleRegisterClick}
-              className="btn bg-sky-600 text-white hover:bg-sky-700 w-full sm:w-64 rounded-full text-xl shadow-md border-none h-14"
-            >
-              Register
-            </button>
+            {workshop.seats - (workshop.enrolled_count || 0) > 0 ? (
+              // 🟢 ถ้าที่นั่งว่าง > 0 ให้โชว์ปุ่มลงทะเบียนสีฟ้าปกติ
+              <button
+                onClick={handleRegisterClick}
+                className="btn bg-sky-600 text-white hover:bg-sky-700 w-full sm:w-64 rounded-full text-xl shadow-md border-none h-14"
+              >
+                Register
+              </button>
+            ) : (
+              // 🔴 ถ้าที่นั่งว่าง <= 0 ให้โชว์ปุ่มสีเทา กดไม่ได้
+              <button
+                disabled
+                className="btn bg-gray-300 text-gray-500 w-full sm:w-64 rounded-full text-xl border-none h-14 cursor-not-allowed"
+              >
+                ที่นั่งเต็มแล้ว 😭
+              </button>
+            )}
           </div>
         </div>
       </main>

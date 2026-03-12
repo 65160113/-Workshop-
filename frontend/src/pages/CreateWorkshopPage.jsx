@@ -9,8 +9,15 @@ export default function CreateWorkshopPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // 🌟 สร้าง State มารับข้อมูล Dropdown จากหลังบ้าน
+  const [categories, setCategories] = useState([]);
+  const [platforms, setPlatforms] = useState([]);
+
+  // 🌟 เพิ่ม categoryId และ platformId ในกล่องเก็บข้อมูลฟอร์ม
   const [formData, setFormData] = useState({
     name: "",
+    categoryId: "",
+    platformId: "",
     date: "",
     startTime: "",
     endTime: "",
@@ -20,17 +27,10 @@ export default function CreateWorkshopPage() {
     description: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
+  // ใช้ useEffect ดึงข้อมูลยศ (ของเดิม) + ดึงข้อมูล Dropdown (ของใหม่)
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    // 1. ถ้าไม่ได้ Login เตะไปหน้า Login
     if (!token) {
       alert("กรุณาเข้าสู่ระบบก่อนครับ");
       navigate("/login");
@@ -38,22 +38,45 @@ export default function CreateWorkshopPage() {
     }
 
     try {
-      // 2. ถอดรหัส Token สดๆ หน้าบ้าน
       const payload = JSON.parse(atob(token.split(".")[1]));
-
-      // 3. เช็คยศ ถ้าไม่ใช่ admin และ organizer เตะกลับหน้าแรก
       if (payload.role !== "admin" && payload.role !== "organizer") {
         alert(
           "⛔ เฉพาะผู้จัดอบรมหรือแอดมินเท่านั้น ที่สามารถสร้าง Workshop ได้ครับ",
         );
         navigate("/");
+        return; // เด้งแล้วจบการทำงานเลย
       }
     } catch (error) {
       console.error("Token error:", error);
       localStorage.removeItem("token");
       navigate("/login");
+      return;
     }
+
+    // 🌟 ฟังก์ชันวิ่งไปดูดข้อมูล Category กับ Platform มาทำ Dropdown
+    const fetchMasterData = async () => {
+      try {
+        // ยิง API ไปหลังบ้านพร้อมกัน 2 เส้นเพื่อความไว!
+        const [catRes, platRes] = await Promise.all([
+          axios.get("http://localhost:3000/api/categories"),
+          axios.get("http://localhost:3000/api/platforms"),
+        ]);
+        setCategories(catRes.data);
+        setPlatforms(platRes.data);
+      } catch (error) {
+        console.error("โหลดข้อมูล Master Data ไม่สำเร็จ:", error);
+      }
+    };
+
+    fetchMasterData();
   }, [navigate]);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,18 +84,33 @@ export default function CreateWorkshopPage() {
     setIsSubmitting(true);
 
     try {
+      // ล้วงกระเป๋าหยิบ Token ออกมาก่อน
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("กรุณาเข้าสู่ระบบก่อนครับ");
+        navigate("/login");
+        return;
+      }
+
       const payload = {
         name: formData.name,
+        categoryId: formData.categoryId,
+        platformId: formData.platformId,
         date: formData.date,
         startTime: formData.startTime,
         endTime: formData.endTime,
-        location: formData.location,
+        location: formData.location, // หมายถึง ลิงก์ห้องประชุม หรือ ชื่อตึก
         speaker: formData.speaker,
         seats: formData.seats,
         description: formData.description,
       };
 
-      await axios.post("http://localhost:3000/api/workshops", payload);
+      // 🌟 แนบ Token ไปกับ Headers ตอนยิง API ด้วย!
+      await axios.post("http://localhost:3000/api/workshops", payload, {
+        headers: {
+          Authorization: `Bearer ${token}`, // 👈 โชว์บัตร!
+        },
+      });
 
       alert("🎉 สร้าง Workshop ใหม่สำเร็จเรียบร้อยครับ!");
       navigate("/");
@@ -117,6 +155,56 @@ export default function CreateWorkshopPage() {
                 onChange={handleChange}
                 required
               />
+            </div>
+
+            {/* 👇 แถว 1.5: หมวดหมู่ (Category) และ แพลตฟอร์ม (Platform) 👇 */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="form-control w-full sm:w-1/2">
+                <label className="label p-1">
+                  <span className="label-text font-semibold text-sky-800">
+                    Category *
+                  </span>
+                </label>
+                <select
+                  name="categoryId"
+                  className="select select-bordered w-full bg-white border-sky-300 focus:border-sky-500 text-base"
+                  value={formData.categoryId}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" disabled>
+                    -- เลือกหมวดหมู่ --
+                  </option>
+                  {categories.map((cat) => (
+                    <option key={cat.category_id} value={cat.category_id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-control w-full sm:w-1/2">
+                <label className="label p-1">
+                  <span className="label-text font-semibold text-sky-800">
+                    Platform *
+                  </span>
+                </label>
+                <select
+                  name="platformId"
+                  className="select select-bordered w-full bg-white border-sky-300 focus:border-sky-500 text-base"
+                  value={formData.platformId}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" disabled>
+                    -- เลือกช่องทางจัดอบรม --
+                  </option>
+                  {platforms.map((plat) => (
+                    <option key={plat.platform_id} value={plat.platform_id}>
+                      {plat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             {/* แถว 2: วันที่ และ เวลาเริ่ม-จบ */}
@@ -172,13 +260,13 @@ export default function CreateWorkshopPage() {
               <div className="form-control w-full sm:w-2/3">
                 <label className="label p-1">
                   <span className="label-text font-semibold text-sky-800">
-                    Location *
+                    Location (Link / Room) *
                   </span>
                 </label>
                 <input
                   type="text"
                   name="location"
-                  placeholder="เช่น ห้อง IF-404"
+                  placeholder="เช่น ลิงก์ Google Meet หรือ ห้อง IF-404"
                   className="input input-bordered w-full bg-white border-sky-300 focus:border-sky-500"
                   value={formData.location}
                   onChange={handleChange}
@@ -219,7 +307,7 @@ export default function CreateWorkshopPage() {
               />
             </div>
 
-            {/* 👇 แถว 5: รายละเอียด (ปรับเป็น textarea 5 บรรทัด) 👇 */}
+            {/* แถว 5: รายละเอียด */}
             <div className="form-control w-full">
               <label className="label p-1">
                 <span className="label-text font-semibold text-sky-800">
@@ -228,7 +316,7 @@ export default function CreateWorkshopPage() {
               </label>
               <textarea
                 name="description"
-                rows="5"
+                rows="4"
                 className="textarea textarea-bordered w-full bg-white border-sky-300 focus:border-sky-500 text-base leading-relaxed"
                 value={formData.description}
                 onChange={handleChange}
