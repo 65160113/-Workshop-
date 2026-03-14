@@ -15,6 +15,7 @@ class WorkshopController {
                w.max_seats as seats,
                (SELECT COUNT(*) FROM enrollments e WHERE e.workshop_id = w.workshop_id) as enrolled_count
         FROM workshops w 
+        WHERE w.status = 'approved'
         ORDER BY w.start_time ASC
       `);
 

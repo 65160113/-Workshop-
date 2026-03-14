@@ -16,23 +16,19 @@ export default function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("🚨 1. ปุ่มทำงานแล้ว! กำลังจะล็อคอินด้วย:", username); // เช็คว่าปุ่มกดติดไหม
     setErrorMsg("");
 
     try {
-      console.log("📡 2. กำลังส่งข้อมูลไปหาหลังบ้าน...");
       const res = await axios.post("http://localhost:3000/api/auth/login", {
         username,
         password,
       });
 
-      console.log("✅ 3. หลังบ้านตอบกลับมาแล้ว! ข้อมูล:", res.data);
       const token = res.data.token;
       localStorage.setItem("token", token);
-      console.log("💾 4. เซฟ Token ลงเครื่องสำเร็จ!");
+      localStorage.setItem("role", res.data.user.role);
 
       // ลบ alert ทิ้งไปเลยครับ เพื่อตัดปัญหาเบราว์เซอร์บล็อค
-      console.log("🚀 5. กำลังจะวาร์ปไปที่:", from);
       navigate(from);
     } catch (err) {
       console.error("❌ 6. พังจ้าาา เจอ Error:", err);

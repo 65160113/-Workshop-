@@ -28,6 +28,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
     setIsLoggedIn(false);
     setUserRole(null); // 🌟 เคลียร์ยศทิ้งตอนล็อคเอาท์ด้วย
     alert("👋 ออกจากระบบเรียบร้อยแล้วครับ");
@@ -44,7 +45,17 @@ export default function Navbar() {
       <div className="text-sky-900 text-lg font-semibold flex items-center">
         {isLoggedIn ? (
           <>
-            {/* 🌟 3. ปุ่มเวทมนตร์: โชว์เฉพาะ Admin หรือ Organizer เท่านั้น */}
+            {/* 🌟 ปุ่ม: โชว์ปุ่ม Admin Dashboard เฉพาะ admin หรือ approver */}
+            {(userRole === "admin" || userRole === "approver") && (
+              <Link
+                to="/admin"
+                className="mr-6 text-amber-600 hover:text-amber-800 transition-colors font-bold flex items-center gap-1"
+              >
+                👑 Admin Dashboard
+              </Link>
+            )}
+
+            {/* 🌟 ปุ่ม: โชว์เฉพาะ Admin หรือ Organizer เท่านั้น */}
             {(userRole === "admin" || userRole === "organizer") && (
               <Link
                 to="/create-workshop"

@@ -7,6 +7,7 @@ import WorkshopDetailPage from "./pages/WorkshopDetailPage";
 import MyAccountPage from "./pages/MyAccountPage";
 import CreateWorkshopPage from "./pages/CreateWorkshopPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -22,7 +23,15 @@ function App() {
         <Route path="/workshop/:id" element={<WorkshopDetailPage />} />
         <Route path="/my-account" element={<MyAccountPage />} />
         <Route path="/create-workshop" element={<CreateWorkshopPage />} />
-        <Route path="/admin" element={<AdminDashboardPage />} />
+        {/* หน้า Admin ที่ถูกยามเฝ้า (เข้าได้เฉพาะ admin กับ approver) */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "approver"]}>
+              <AdminDashboardPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

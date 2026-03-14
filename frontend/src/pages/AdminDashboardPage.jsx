@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
+import { Link } from "react-router-dom";
 
 export default function AdminDashboardPage() {
   const [workshops, setWorkshops] = useState([]);
@@ -84,7 +85,15 @@ export default function AdminDashboardPage() {
                   {workshops.map((ws) => (
                     <tr key={ws.id} className="hover:bg-sky-50 transition">
                       <td className="font-semibold text-sky-700">{ws.date}</td>
-                      <td className="font-bold text-gray-800">{ws.name}</td>
+                      <td className="font-bold text-gray-800">
+                        <Link
+                          to={`/workshop/${ws.id}`}
+                          target="_blank" // 🌟 ทริค UX: เปิดแท็บใหม่ แอดมินจะได้ไม่หลุดจากหน้า Dashboard
+                          className="text-sky-700 hover:text-sky-500 underline transition-colors"
+                        >
+                          {ws.name}
+                        </Link>
+                      </td>
                       <td>{ws.speaker || "-"}</td>
                       <td className="text-gray-500">{ws.organizer_name}</td>
                       <td className="flex justify-center gap-2">
