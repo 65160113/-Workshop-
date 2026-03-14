@@ -128,6 +128,60 @@ class WorkshopController {
         .json({ message: "เกิดข้อผิดพลาดในการบันทึกข้อมูลลง Database" });
     }
   }
+  // 🌟 1. ดึงรายการ Workshop ที่รออนุมัติ (status = 'pending')
+  async getPendingWorkshops(req, res) {
+    try {
+      // ดึงเฉพาะงานที่ status เป็น pending
+      const [workshops] = await pool.query(`
+        SELECT w.workshop_id as id, 
+               w.title as name, 
+               w.speaker_name as speaker,
+               DATE_FORMAT(w.start_time, '%d %M %Y') as date,
+               u.first_name as organizer_name
+        FROM workshops w
+        JOIN users u ON w.organizer_id = u.user_id
+        WHERE w.status = 'pending'
+        ORDER BY w.start_time ASC
+      `);
+
+      res.status(200).json(workshops);
+    } catch (error) {
+      console.error("Fetch Pending Error:", error.message);
+      res
+        .status(500)
+        .json({ message: "เกิดข้อผิดพลาดในการดึงข้อมูลงานที่รออนุมัติ" });
+    }
+  }
+
+  // 🌟 2. อัปเดตสถานะ (Approve / Reject)
+  async updateWorkshopStatus(req, res) {
+    try {
+      const { id } = req.params; // รับ ID ของงานจาก URL
+      const { status } = req.body; // รับสถานะที่จะเปลี่ยน ('approved' หรือ 'rejected')
+
+      // เช็คว่าส่งสถานะมาถูกต้องไหม
+      if (!["approved", "rejected"].includes(status)) {
+        return res.status(400).json({ message: "สถานะไม่ถูกต้องครับ" });
+      }
+
+      // สั่งอัปเดตลง Database
+      const [result] = await pool.query(
+        "UPDATE workshops SET status = ? WHERE workshop_id = ?",
+        [status, id],
+      );
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "ไม่พบ Workshop นี้ในระบบ" });
+      }
+
+      res
+        .status(200)
+        .json({ message: `อัปเดตสถานะเป็น ${status} เรียบร้อยแล้ว!` });
+    } catch (error) {
+      console.error("Update Status Error:", error.message);
+      res.status(500).json({ message: "เกิดข้อผิดพลาดในการอัปเดตสถานะ" });
+    }
+  }
 }
 
 module.exports = new WorkshopController();

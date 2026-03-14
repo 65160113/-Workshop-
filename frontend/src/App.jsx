@@ -6,6 +6,7 @@ import RegisterPage from "./pages/RegisterPage";
 import WorkshopDetailPage from "./pages/WorkshopDetailPage";
 import MyAccountPage from "./pages/MyAccountPage";
 import CreateWorkshopPage from "./pages/CreateWorkshopPage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/workshop/:id" element={<WorkshopDetailPage />} />
         <Route path="/my-account" element={<MyAccountPage />} />
         <Route path="/create-workshop" element={<CreateWorkshopPage />} />
+        <Route path="/admin" element={<AdminDashboardPage />} />
       </Routes>
     </BrowserRouter>
   );
