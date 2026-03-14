@@ -1,4 +1,5 @@
 // frontend/src/components/ProtectedRoute.jsx
+/* eslint-disable react/prop-types */ 
 import { Navigate } from "react-router-dom";
 
 // รับ component หน้าเว็บที่ต้องการปกป้อง (children) และตำแหน่งที่อนุญาตให้เข้าได้ (allowedRoles)
@@ -13,7 +14,8 @@ export default function ProtectedRoute({ children, allowedRoles }) {
   }
 
   // กฎข้อ 2: มี Token แต่ตำแหน่งไม่ตรงกับที่อนุญาต เตะไปหน้า Home
-  if (allowedRoles && !allowedRoles.includes(userRole)) {
+  // 🌟 เพิ่ม Array.isArray() เข้ามาเช็คชัวร์ๆ ก่อนว่ามันเป็น Array จริงๆ ค่อยเรียกใช้ .includes()
+  if (allowedRoles && Array.isArray(allowedRoles) && !allowedRoles.includes(userRole)) {
     alert("คุณไม่มีสิทธิ์เข้าถึงหน้านี้ครับ! 🛑");
     return <Navigate to="/" replace />;
   }
