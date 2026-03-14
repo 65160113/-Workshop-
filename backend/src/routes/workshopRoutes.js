@@ -6,8 +6,18 @@ const { verifyToken, verifyRoles } = require("../middleware/authMiddleware");
 // เมื่อมีคนเรียก GET /api/workshops ให้วิ่งไปทำงานที่ Controller
 router.get("/", workshopController.getAllWorkshops);
 router.get("/pending", workshopController.getPendingWorkshops);
+
+router.get(
+  "/my-workshops",
+  verifyToken,
+  verifyRoles("admin", "organizer"), // ให้เข้าได้แค่ organizer กับ admin
+  workshopController.getMyWorkshops,
+);
+
 router.patch("/:id/status", workshopController.updateWorkshopStatus);
+
 router.get("/:id", workshopController.getWorkshopById);
+
 router.post(
   "/",
   verifyToken,

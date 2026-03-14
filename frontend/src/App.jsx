@@ -8,6 +8,7 @@ import MyAccountPage from "./pages/MyAccountPage";
 import CreateWorkshopPage from "./pages/CreateWorkshopPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import MyWorkshopsPage from "./pages/MyWorkshopsPage";
 
 function App() {
   return (
@@ -29,6 +30,15 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin", "approver"]}>
               <AdminDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        {/* หน้า My Workshops สำหรับ Organizer (และ Admin เผื่ออยากดู) */}
+        <Route
+          path="/my-workshops"
+          element={
+            <ProtectedRoute allowedRoles={["organizer", "admin", "approver"]}>
+              <MyWorkshopsPage />
             </ProtectedRoute>
           }
         />

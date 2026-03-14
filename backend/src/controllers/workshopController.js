@@ -35,6 +35,7 @@ class WorkshopController {
       const [workshops] = await pool.query(
         `
         SELECT w.workshop_id as id, 
+               w.organizer_id,
                w.title as name, 
                w.description,
                w.speaker_name as speaker,
@@ -181,6 +182,34 @@ class WorkshopController {
     } catch (error) {
       console.error("Update Status Error:", error.message);
       res.status(500).json({ message: "เกิดข้อผิดพลาดในการอัปเดตสถานะ" });
+    }
+  }
+  // 🌟 ฟังก์ชันดึงเฉพาะงานที่ "ฉัน" (Organizer) เป็นคนสร้าง
+  async getMyWorkshops(req, res) {
+    try {
+      // req.user.id ได้มาจาก verifyToken ตอนล็อคอิน
+      const organizerId = req.user.id;
+
+      const [workshops] = await pool.query(
+        `
+        SELECT w.workshop_id as id, 
+               w.title as name, 
+               COALESCE(w.location_detail, w.meeting_url, 'รอประกาศสถานที่') as location, 
+               DATE_FORMAT(w.start_time, '%d %M %Y') as date, 
+               w.status
+        FROM workshops w
+        WHERE w.organizer_id = ?
+        ORDER BY w.start_time DESC
+      `,
+        [organizerId],
+      ); // ดึงงานใหม่สุดขึ้นก่อน (DESC)
+
+      res.status(200).json(workshops);
+    } catch (error) {
+      console.error("Fetch My Workshops Error:", error.message);
+      res
+        .status(500)
+        .json({ message: "เกิดข้อผิดพลาดในการดึงข้อมูลงานของคุณ" });
     }
   }
 }

@@ -55,6 +55,16 @@ export default function Navbar() {
               </Link>
             )}
 
+            {/* 🌟 ปุ่ม: โชว์ My Workshops เฉพาะ Organizer (และ Admin) 👇 */}
+            {(userRole === "organizer" || userRole === "admin") && (
+              <Link
+                to="/my-workshops"
+                className="mr-6 text-sky-700 hover:text-sky-900 transition-colors font-bold"
+              >
+                🛠️ My Workshops
+              </Link>
+            )}
+
             {/* 🌟 ปุ่ม: โชว์เฉพาะ Admin หรือ Organizer เท่านั้น */}
             {(userRole === "admin" || userRole === "organizer") && (
               <Link
