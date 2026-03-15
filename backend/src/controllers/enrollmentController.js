@@ -48,7 +48,7 @@ class EnrollmentController {
 
       // บันทึกลงฐานข้อมูล
       await pool.query(
-        'INSERT INTO enrollments (user_id, workshop_id, status) VALUES (?, ?, "active")',
+        `INSERT INTO enrollments (user_id, workshop_id, status) VALUES (?, ?, 'active')`,
         [userId, workshopId],
       );
 
