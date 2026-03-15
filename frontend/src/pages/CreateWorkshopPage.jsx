@@ -58,8 +58,8 @@ export default function CreateWorkshopPage() {
       try {
         // ยิง API ไปหลังบ้านพร้อมกัน 2 เส้นเพื่อความไว!
         const [catRes, platRes] = await Promise.all([
-          axios.get("http://localhost:3000/api/categories"),
-          axios.get("http://localhost:3000/api/platforms"),
+          axios.get("https://workshop-api-5bm0.onrender.com/api/categories"),
+          axios.get("https://workshop-api-5bm0.onrender.com/api/platforms"),
         ]);
         setCategories(catRes.data);
         setPlatforms(platRes.data);
@@ -106,11 +106,15 @@ export default function CreateWorkshopPage() {
       };
 
       // 🌟 แนบ Token ไปกับ Headers ตอนยิง API ด้วย!
-      await axios.post("http://localhost:3000/api/workshops", payload, {
-        headers: {
-          Authorization: `Bearer ${token}`, // 👈 โชว์บัตร!
+      await axios.post(
+        "https://workshop-api-5bm0.onrender.com/api/workshops",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // 👈 โชว์บัตร!
+          },
         },
-      });
+      );
 
       alert("🎉 สร้าง Workshop ใหม่สำเร็จเรียบร้อยครับ!");
       navigate("/");

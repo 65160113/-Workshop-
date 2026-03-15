@@ -34,7 +34,7 @@ export default function WorkshopDetailPage() {
     const fetchDetail = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/api/workshops/${id}`,
+          `https://workshop-api-5bm0.onrender.com/api/workshops/${id}`,
         );
         setWorkshop(res.data);
       } catch (error) {
@@ -56,7 +56,7 @@ export default function WorkshopDetailPage() {
 
     try {
       await axios.post(
-        "http://localhost:3000/api/enrollments",
+        "https://workshop-api-5bm0.onrender.com/api/enrollments",
         { workshopId: id },
         { headers: { Authorization: `Bearer ${token}` } },
       );

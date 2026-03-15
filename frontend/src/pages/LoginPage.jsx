@@ -19,10 +19,13 @@ export default function LoginPage() {
     setErrorMsg("");
 
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/login", {
-        username,
-        password,
-      });
+      const res = await axios.post(
+        "https://workshop-api-5bm0.onrender.com/api/auth/login",
+        {
+          username,
+          password,
+        },
+      );
 
       const token = res.data.token;
       localStorage.setItem("token", token);

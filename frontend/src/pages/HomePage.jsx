@@ -10,7 +10,9 @@ export default function HomePage() {
   useEffect(() => {
     const fetchWorkshops = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/workshops");
+        const res = await axios.get(
+          "https://workshop-api-5bm0.onrender.com/api/workshops",
+        );
         setWorkshops(res.data);
       } catch (error) {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);

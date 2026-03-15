@@ -26,7 +26,9 @@ export default function RegisterPage() {
   useEffect(() => {
     const fetchFaculties = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/faculties");
+        const res = await axios.get(
+          "https://workshop-api-5bm0.onrender.com/api/faculties",
+        );
         setFaculties(res.data);
       } catch (error) {
         console.error("โหลดข้อมูลคณะไม่สำเร็จ:", error);
@@ -54,15 +56,18 @@ export default function RegisterPage() {
     }
 
     try {
-      await axios.post("http://localhost:3000/api/auth/register", {
-        username: formData.username,
-        password: formData.password, // ส่งแค่ password ตัวจริงไปก็พอ
-        email: formData.email,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        facultyId: formData.facultyId,
-        role: "student",
-      });
+      await axios.post(
+        "https://workshop-api-5bm0.onrender.com/api/auth/register",
+        {
+          username: formData.username,
+          password: formData.password, // ส่งแค่ password ตัวจริงไปก็พอ
+          email: formData.email,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          facultyId: formData.facultyId,
+          role: "student",
+        },
+      );
 
       alert("🎉 สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบครับ");
       navigate("/login", { state: { from: from } });

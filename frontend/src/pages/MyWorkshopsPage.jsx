@@ -18,7 +18,7 @@ export default function MyWorkshopsPage() {
       const token = localStorage.getItem("token");
       // 🌟 เรียก API หลังบ้านเพื่อดึงเฉพาะงานของ "ฉัน"
       const res = await axios.get(
-        "http://localhost:3000/api/workshops/my-workshops",
+        "https://workshop-api-5bm0.onrender.com/api/workshops/my-workshops",
         {
           headers: { Authorization: `Bearer ${token}` },
         },

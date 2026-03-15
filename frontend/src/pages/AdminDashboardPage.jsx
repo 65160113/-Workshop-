@@ -12,7 +12,7 @@ export default function AdminDashboardPage() {
   const fetchPendingWorkshops = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:3000/api/workshops/pending",
+        "https://workshop-api-5bm0.onrender.com/api/workshops/pending",
       );
       setWorkshops(res.data);
     } catch (error) {
@@ -34,9 +34,12 @@ export default function AdminDashboardPage() {
     if (!isConfirm) return;
 
     try {
-      await axios.patch(`http://localhost:3000/api/workshops/${id}/status`, {
-        status: statusName,
-      });
+      await axios.patch(
+        `https://workshop-api-5bm0.onrender.com/api/workshops/${id}/status`,
+        {
+          status: statusName,
+        },
+      );
       alert(`อัปเดตสถานะเป็น ${statusName} เรียบร้อยแล้ว! 🎉`);
 
       // อัปเดตเสร็จปุ๊บ สั่งให้โหลดข้อมูลตารางใหม่ทันที (งานที่กดไปแล้วจะได้หายไป)

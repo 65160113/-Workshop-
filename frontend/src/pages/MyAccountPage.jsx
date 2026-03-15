@@ -29,7 +29,7 @@ export default function MyAccountPage() {
         // 🌟 1. ลองดึงข้อมูล Profile (ถ้าหลังบ้านยังไม่มี API นี้ โค้ดจะไม่พังครับ มันจะข้ามไปเอง)
         try {
           const profileRes = await axios.get(
-            "http://localhost:3000/api/auth/me",
+            "https://workshop-api-5bm0.onrender.com/api/auth/me",
             {
               headers: { Authorization: `Bearer ${token}` },
             },
@@ -42,7 +42,7 @@ export default function MyAccountPage() {
         // 🌟 2. ดึงข้อมูลตั๋ว (ดึงเฉพาะคนที่ "ไม่ใช่" แอดมิน)
         if (userRole !== "admin" && userRole !== "approver") {
           const res = await axios.get(
-            "http://localhost:3000/api/enrollments/my-workshops", // API เดิมของลูกพี่เป๊ะๆ!
+            "https://workshop-api-5bm0.onrender.com/api/enrollments/my-workshops", // API เดิมของลูกพี่เป๊ะๆ!
             { headers: { Authorization: `Bearer ${token}` } },
           );
 
