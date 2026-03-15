@@ -1,5 +1,6 @@
 // backend/src/controllers/authController.js
 const authService = require("../services/authService");
+const { pool } = require("../config/db.config");
 
 class AuthController {
   async register(req, res) {
@@ -92,6 +93,29 @@ class AuthController {
 
       // Error อื่นๆ (HTTP 500)
       res.status(500).json({ message: "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์" });
+    }
+  }
+  // 🌟 2. เพิ่มฟังก์ชันดึงข้อมูลโปรไฟล์ของตัวเอง
+  async getMyProfile(req, res) {
+    try {
+      // req.user.id ถูกแกะมาจาก Token โดย Middleware
+      const userId = req.user.id; 
+
+      const [users] = await pool.query(
+        `SELECT user_id, first_name, last_name, email, role 
+         FROM users 
+         WHERE user_id = ?`,
+        [userId]
+      );
+
+      if (users.length === 0) {
+        return res.status(404).json({ message: "ไม่พบข้อมูลผู้ใช้งานครับ" });
+      }
+
+      res.status(200).json(users[0]);
+    } catch (error) {
+      console.error("Get Profile Error:", error.message);
+      res.status(500).json({ message: "เกิดข้อผิดพลาดในการดึงข้อมูลโปรไฟล์" });
     }
   }
 }

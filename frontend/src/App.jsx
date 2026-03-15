@@ -22,7 +22,15 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/workshop/:id" element={<WorkshopDetailPage />} />
-        <Route path="/my-account" element={<MyAccountPage />} />
+        {/* หน้า My Account (เข้าได้ทุกคนที่ Login แล้ว) */}
+        <Route
+          path="/my-account"
+          element={
+            <ProtectedRoute>
+              <MyAccountPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/create-workshop" element={<CreateWorkshopPage />} />
         {/* หน้า Admin ที่ถูกยามเฝ้า (เข้าได้เฉพาะ admin กับ approver) */}
         <Route
