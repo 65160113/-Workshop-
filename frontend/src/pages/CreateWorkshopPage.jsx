@@ -4,6 +4,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function CreateWorkshopPage() {
   const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState("");
@@ -58,8 +60,8 @@ export default function CreateWorkshopPage() {
       try {
         // ยิง API ไปหลังบ้านพร้อมกัน 2 เส้นเพื่อความไว!
         const [catRes, platRes] = await Promise.all([
-          axios.get("https://workshop-api-5bm0.onrender.com/api/categories"),
-          axios.get("https://workshop-api-5bm0.onrender.com/api/platforms"),
+          axios.get(`${API_URL}/api/categories`),
+          axios.get(`${API_URL}/api/platforms`),
         ]);
         setCategories(catRes.data);
         setPlatforms(platRes.data);
@@ -107,7 +109,7 @@ export default function CreateWorkshopPage() {
 
       // 🌟 แนบ Token ไปกับ Headers ตอนยิง API ด้วย!
       await axios.post(
-        "https://workshop-api-5bm0.onrender.com/api/workshops",
+        `${API_URL}/api/workshops`,
         payload,
         {
           headers: {

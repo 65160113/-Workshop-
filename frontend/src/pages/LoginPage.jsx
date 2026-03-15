@@ -4,6 +4,8 @@ import axios from "axios";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -20,7 +22,7 @@ export default function LoginPage() {
 
     try {
       const res = await axios.post(
-        "https://workshop-api-5bm0.onrender.com/api/auth/login",
+        `${API_URL}/api/auth/login`,
         {
           username,
           password,

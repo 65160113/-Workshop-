@@ -4,6 +4,8 @@ import axios from "axios";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function RegisterPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,7 +29,7 @@ export default function RegisterPage() {
     const fetchFaculties = async () => {
       try {
         const res = await axios.get(
-          "https://workshop-api-5bm0.onrender.com/api/faculties",
+          `${API_URL}/api/faculties`,
         );
         setFaculties(res.data);
       } catch (error) {
@@ -57,7 +59,7 @@ export default function RegisterPage() {
 
     try {
       await axios.post(
-        "https://workshop-api-5bm0.onrender.com/api/auth/register",
+        `${API_URL}/api/auth/register`,
         {
           username: formData.username,
           password: formData.password, // ส่งแค่ password ตัวจริงไปก็พอ

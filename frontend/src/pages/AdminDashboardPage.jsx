@@ -4,6 +4,8 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function AdminDashboardPage() {
   const [workshops, setWorkshops] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,9 +13,7 @@ export default function AdminDashboardPage() {
   // 🌟 ฟังก์ชันดึงข้อมูลงานที่รออนุมัติ
   const fetchPendingWorkshops = async () => {
     try {
-      const res = await axios.get(
-        "https://workshop-api-5bm0.onrender.com/api/workshops/pending",
-      );
+      const res = await axios.get(`${API_URL}/api/workshops/pending`);
       setWorkshops(res.data);
     } catch (error) {
       console.error("ดึงข้อมูลไม่สำเร็จ:", error);
@@ -34,12 +34,9 @@ export default function AdminDashboardPage() {
     if (!isConfirm) return;
 
     try {
-      await axios.patch(
-        `https://workshop-api-5bm0.onrender.com/api/workshops/${id}/status`,
-        {
-          status: statusName,
-        },
-      );
+      await axios.patch(`${API_URL}/api/workshops/${id}/status`, {
+        status: statusName,
+      });
       alert(`อัปเดตสถานะเป็น ${statusName} เรียบร้อยแล้ว! 🎉`);
 
       // อัปเดตเสร็จปุ๊บ สั่งให้โหลดข้อมูลตารางใหม่ทันที (งานที่กดไปแล้วจะได้หายไป)

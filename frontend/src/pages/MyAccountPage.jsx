@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function MyAccountPage() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,7 +31,7 @@ export default function MyAccountPage() {
         // 🌟 1. ลองดึงข้อมูล Profile (ถ้าหลังบ้านยังไม่มี API นี้ โค้ดจะไม่พังครับ มันจะข้ามไปเอง)
         try {
           const profileRes = await axios.get(
-            "https://workshop-api-5bm0.onrender.com/api/auth/me",
+            `${API_URL}/api/auth/me`,
             {
               headers: { Authorization: `Bearer ${token}` },
             },
@@ -42,7 +44,7 @@ export default function MyAccountPage() {
         // 🌟 2. ดึงข้อมูลตั๋ว (ดึงเฉพาะคนที่ "ไม่ใช่" แอดมิน)
         if (userRole !== "admin" && userRole !== "approver") {
           const res = await axios.get(
-            "https://workshop-api-5bm0.onrender.com/api/enrollments/my-workshops", // API เดิมของลูกพี่เป๊ะๆ!
+            `${API_URL}/api/enrollments/my-workshops`, 
             { headers: { Authorization: `Bearer ${token}` } },
           );
 

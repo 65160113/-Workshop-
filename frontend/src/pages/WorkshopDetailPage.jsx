@@ -4,6 +4,8 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function WorkshopDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -33,9 +35,7 @@ export default function WorkshopDetailPage() {
 
     const fetchDetail = async () => {
       try {
-        const res = await axios.get(
-          `https://workshop-api-5bm0.onrender.com/api/workshops/${id}`,
-        );
+        const res = await axios.get(`${API_URL}/api/workshops/${id}`);
         setWorkshop(res.data);
       } catch (error) {
         console.error("Error fetching detail:", error);
@@ -56,7 +56,7 @@ export default function WorkshopDetailPage() {
 
     try {
       await axios.post(
-        "https://workshop-api-5bm0.onrender.com/api/enrollments",
+        `${API_URL}/api/enrollments`,
         { workshopId: id },
         { headers: { Authorization: `Bearer ${token}` } },
       );

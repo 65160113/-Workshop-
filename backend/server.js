@@ -9,21 +9,23 @@ const masterRoutes = require("./src/routes/masterRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-});
 
-// Middlewares พื้นฐาน
+// 🌟 แก้ไข CORS: ใส่ Array เพื่ออนุญาตหลายเว็บไซต์พร้อมกัน
+const allowedOrigins = [
+  "http://localhost:5173",                   // ให้หน้าบ้านในเครื่องเราต่อได้
+  "https://workshop-alpha-brown.vercel.app", // ให้เว็บจริงบน Vercel ต่อได้
+  process.env.CLIENT_URL                     // เผื่อใช้ตัวแปร .env ในอนาคต
+].filter(Boolean); // กรองค่าที่อาจจะเป็น undefined ทิ้ง
+
 app.use(
   cors({
-    origin:
-      process.env.CLIENT_URL || "https://workshop-alpha-brown.vercel.app",
+    origin: allowedOrigins,
     credentials: true,
-  }),
+  })
 );
 app.use(express.json()); // ให้ API รับข้อมูลเป็น JSON ได้
 
-// Health Check API (เอาไว้เทสว่า Server รันติดไหม)
+// Health Check API
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     status: "OK",
@@ -36,9 +38,8 @@ app.use('/api/auth', authRoutes);
 app.use("/api/workshops", workshopRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api", masterRoutes);
-// TODO: เดี๋ยวเราจะเอา Route ของ Auth มาใส่ตรงนี้
 
-// เริ่มเปิด Server
+// เริ่มเปิด Server (ต้องมีแค่อันเดียว และอยู่ล่างสุดเสมอ!)
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });

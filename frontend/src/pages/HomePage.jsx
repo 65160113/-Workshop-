@@ -8,11 +8,11 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const API_URL = import.meta.env.VITE_API_URL;
+
     const fetchWorkshops = async () => {
       try {
-        const res = await axios.get(
-          "https://workshop-api-5bm0.onrender.com/api/workshops",
-        );
+        const res = await axios.get(`${API_URL}/api/workshops`);
         setWorkshops(res.data);
       } catch (error) {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
@@ -20,8 +20,9 @@ export default function HomePage() {
         setLoading(false);
       }
     };
+
     fetchWorkshops();
-  }, []);
+  }, []); 
 
   return (
     <div className="min-h-screen flex flex-col bg-base-100">

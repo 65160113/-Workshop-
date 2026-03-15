@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function MyWorkshopsPage() {
   const [myWorkshops, setMyWorkshops] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ export default function MyWorkshopsPage() {
       const token = localStorage.getItem("token");
       // 🌟 เรียก API หลังบ้านเพื่อดึงเฉพาะงานของ "ฉัน"
       const res = await axios.get(
-        "https://workshop-api-5bm0.onrender.com/api/workshops/my-workshops",
+        `${API_URL}/api/workshops/my-workshops`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
