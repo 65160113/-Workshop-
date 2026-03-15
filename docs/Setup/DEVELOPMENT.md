@@ -10,6 +10,7 @@
   * Node.js (v18 หรือสูงกว่า) 
   * MySQL Server (v8.0)
   * Git
+  * VS Code (แนะนำให้ลง Extension: `Database Client` หรือ `MySQL` สำหรับดูข้อมูลในฐานข้อมูล)
 
 ---
 
@@ -21,15 +22,12 @@
 git clone https://github.com/65160113/-Workshop-.git
 cd -Workshop-
 ```
+### 2. รับกุญแจเชื่อมต่อ Database 🔑
+เนื่องจากตอนนี้ระบบเราใช้ฐานข้อมูลบน Cloud (Aiven) ร่วมกันทั้งทีม:
 
-### 2. Setup Database (ตั้งค่าฐานข้อมูล)
-1.เปิดโปรแกรม XAMPP หรือ MAMP แล้วกด Start ที่ MySQL ให้ทำงาน
+1.ทักหา Dev เพื่อขอรับไฟล์ .env สำหรับเชื่อมต่อระบบ
 
-2.เปิดเบราว์เซอร์เข้าไปที่ http://localhost/phpmyadmin หรือใช้โปรแกรมจัดการฐานข้อมูล
-
-3.รันคำสั่ง SQL จากไฟล์ที่เราเตรียมไว้:
-* รันไฟล์ backend/database/schema.sql (เพื่อสร้างตาราง)
-* รันไฟล์ backend/database/seeds.sql (เพื่อใส่ข้อมูลจำลอง)
+2.ห้าม Push ไฟล์ .env ขึ้น GitHub เด็ดขาด!
 
 ### 3. Setup Backend (หลังบ้าน)
 ```bash
@@ -39,8 +37,7 @@ cd backend
 2. ติดตั้ง Library ต่างๆ
 npm install
 
-3. คัดลอกไฟล์ตั้งค่า และกรอกข้อมูลให้ตรงกับเครื่องตัวเอง
-cp .env.example .env
+3. นำไฟล์ .env ที่ได้จาก Dev มาวางไว้ในโฟลเดอร์ backend
 
 4. รันเซิร์ฟเวอร์
 npm run dev
@@ -68,19 +65,19 @@ npm run dev
 
 * [ ] Frontend: เข้าเว็บแอปพลิเคชันผ่าน Browser ได้ หน้าตาเว็บแสดงผลปกติ 
 
-* [ ] Database: โค้ด Backend ไม่ฟ้อง Error การเชื่อมต่อ Database (Connected successfully) 
+* [ ] Database: ใน Terminal ของ Backend ไม่ฟ้อง Error และขึ้นข้อความว่าเชื่อมต่อ Database สำเร็จ (เพราะดึงข้อมูลจาก Cloud ได้)
 
 ## 🛠️ Troubleshooting (ปัญหาที่พบบ่อย)
 #### 🔴 Port 3000 หรือ 5173 ถูกใช้งานอยู่ (Port Already in Use)
 
 วิธีแก้: มีโปรแกรมอื่นแย่งพอร์ตนี้อยู่ ให้ปิดโปรแกรมนั้น หรือเปลี่ยนค่า PORT ในไฟล์ .env 
 
-#### 🔴 Database Connection Failed (เชื่อมต่อฐานข้อมูลไม่ได้)
+#### 🔴 Database Connection Failed (เชื่อมต่อฐานข้อมูลไม่ได้ / Error 500)
 วิธีแก้: 
 
-1.เช็คว่า MySQL ในเครื่องรันอยู่หรือไม่ (Service is running) 
+1. เช็คอินเทอร์เน็ตของคุณ (เพราะต้องต่อเน็ตเพื่อดึงข้อมูลจาก Cloud)
 
-2.เช็คไฟล์ .env ว่าใส่ Username / Password ของ MySQL ในเครื่องตัวเองถูกต้องหรือไม่ 
+2. ตรวจสอบไฟล์ .env ในโฟลเดอร์ backend ว่ามีข้อมูลครบถ้วน และไม่ได้พิมพ์ชื่อไฟล์ผิด (ต้องเป็น .env เฉยๆ ไม่มีนามสกุลอื่นต่อท้าย)
 
 #### 🔴 Dependencies not installing (ลง npm install ไม่ผ่าน)
 วิธีแก้: ให้ลบโฟลเดอร์ node_modules และไฟล์ package-lock.json ทิ้ง แล้วลองสั่ง npm install ใหม่อีกครั้ง 
