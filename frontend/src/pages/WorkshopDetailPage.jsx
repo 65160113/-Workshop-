@@ -153,6 +153,18 @@ export default function WorkshopDetailPage() {
                 {workshop.time}
               </p>
               <p>
+                <span className="font-bold w-24 inline-block">Category</span> :{" "}
+                <span className="badge badge-outline text-sky-700 font-semibold">
+                  {workshop.category_name || "-"}
+                </span>
+              </p>
+              <p>
+                <span className="font-bold w-24 inline-block">Platform</span> :{" "}
+                <span className="badge badge-outline text-indigo-600 font-semibold">
+                  {workshop.platform_name || "-"}
+                </span>
+              </p>
+              <p>
                 <span className="font-bold w-24 inline-block">Location</span> :{" "}
                 {workshop.location}
               </p>

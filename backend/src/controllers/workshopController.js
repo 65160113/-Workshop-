@@ -13,6 +13,7 @@ class WorkshopController {
                COALESCE(w.location_detail, w.meeting_url, 'รอประกาศสถานที่') as location, 
                DATE_FORMAT(w.start_time, '%d %M %Y') as date, 
                w.max_seats as seats,
+               w.category_id,
                (SELECT COUNT(*) FROM enrollments e WHERE e.workshop_id = w.workshop_id) as enrolled_count
         FROM workshops w 
         WHERE w.status = 'approved'
@@ -31,7 +32,7 @@ class WorkshopController {
     try {
       const { id } = req.params; // รับ ID มาจาก URL
 
-      // 🌟 อัปเกรดคำสั่ง SQL: เพิ่มการนับยอดคนลงทะเบียน (enrolled_count)
+      // 🌟 อัปเกรดคำสั่ง SQL: ดึงครบทั้ง หมวดหมู่, แพลตฟอร์ม, และยอดคนจอง
       const [workshops] = await pool.query(
         `
         SELECT w.workshop_id as id, 
@@ -43,8 +44,12 @@ class WorkshopController {
                DATE_FORMAT(w.start_time, '%d %M %Y') as date, 
                CONCAT(DATE_FORMAT(w.start_time, '%H:%i'), ' - ', DATE_FORMAT(w.end_time, '%H:%i')) as time,
                w.max_seats as seats,
+               c.name as category_name, 
+               p.name as platform_name, 
                (SELECT COUNT(*) FROM enrollments e WHERE e.workshop_id = w.workshop_id) as enrolled_count
         FROM workshops w
+        LEFT JOIN categories c ON w.category_id = c.category_id
+        LEFT JOIN platforms p ON w.platform_id = p.platform_id
         WHERE w.workshop_id = ?
       `,
         [id],
