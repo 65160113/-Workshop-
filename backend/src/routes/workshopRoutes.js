@@ -3,21 +3,30 @@ const router = express.Router();
 const workshopController = require("../controllers/workshopController");
 const { verifyToken, verifyRoles } = require("../middleware/authMiddleware");
 
-// เมื่อมีคนเรียก GET /api/workshops ให้วิ่งไปทำงานที่ Controller
-router.get("/", workshopController.getAllWorkshops);
-router.get("/pending", workshopController.getPendingWorkshops);
+// ==========================================
+// 🌟 กลุ่มที่ 1: เส้นทางแบบ Static (คำเฉพาะ) ต้องอยู่ด้านบน!
+// ==========================================
 
+// ดู Workshop ทั้งหมด (ใครก็ดูได้)
+router.get("/", workshopController.getAllWorkshops);
+
+// ดู Workshop ที่รออนุมัติ (เฉพาะ admin, approver)
+router.get(
+  "/pending",
+  verifyToken,
+  verifyRoles("admin", "approver"),
+  workshopController.getPendingWorkshops,
+);
+
+// ดู Workshop ของตัวเอง (เฉพาะ admin, organizer)
 router.get(
   "/my-workshops",
   verifyToken,
-  verifyRoles("admin", "organizer"), // ให้เข้าได้แค่ organizer กับ admin
+  verifyRoles("admin", "organizer"),
   workshopController.getMyWorkshops,
 );
 
-router.patch("/:id/status", workshopController.updateWorkshopStatus);
-
-router.get("/:id", workshopController.getWorkshopById);
-
+// สร้าง Workshop ใหม่
 router.post(
   "/",
   verifyToken,
@@ -25,6 +34,22 @@ router.post(
   workshopController.createWorkshop,
 );
 
+// ==========================================
+// 🌟 กลุ่มที่ 2: เส้นทางแบบ Dynamic (มี /:id) ต้องอยู่ด้านล่าง!
+// ==========================================
+
+// ดูรายละเอียด Workshop รายตัว
+router.get("/:id", workshopController.getWorkshopById);
+
+// อัปเดตสถานะ (Approve/Reject)
+router.patch(
+  "/:id/status",
+  verifyToken,
+  verifyRoles("admin", "approver"),
+  workshopController.updateWorkshopStatus,
+);
+
+// แก้ไขข้อมูล Workshop
 router.put(
   "/:id",
   verifyToken,

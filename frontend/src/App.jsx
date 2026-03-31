@@ -10,6 +10,7 @@ import AdminDashboardPage from "./pages/AdminDashboardPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MyWorkshopsPage from "./pages/MyWorkshopsPage";
 import EditWorkshopPage from "./pages/EditWorkshopPage";
+import ManageUsersPage from "./pages/ManageUsersPage";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           }
         />
         <Route path="/edit-workshop/:id" element={<EditWorkshopPage />} />
+        <Route path="/admin/manage-users" element={<ManageUsersPage />} />
       </Routes>
     </BrowserRouter>
   );
