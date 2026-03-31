@@ -9,6 +9,7 @@ import CreateWorkshopPage from "./pages/CreateWorkshopPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MyWorkshopsPage from "./pages/MyWorkshopsPage";
+import EditWorkshopPage from "./pages/EditWorkshopPage";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/edit-workshop/:id" element={<EditWorkshopPage />} />
       </Routes>
     </BrowserRouter>
   );

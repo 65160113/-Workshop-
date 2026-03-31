@@ -25,4 +25,11 @@ router.post(
   workshopController.createWorkshop,
 );
 
+router.put(
+  "/:id",
+  verifyToken,
+  verifyRoles("admin", "organizer"),
+  workshopController.updateWorkshop,
+);
+
 module.exports = router;

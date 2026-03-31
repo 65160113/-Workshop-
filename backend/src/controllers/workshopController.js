@@ -46,6 +46,14 @@ class WorkshopController {
                w.max_seats as seats,
                c.name as category_name, 
                p.name as platform_name, 
+
+               /* เพิ่ม 5 บรรทัดนี้ เพื่อให้ฟอร์มแก้ไขดึงไปใช้ได้ง่ายๆ */
+               w.category_id,
+               w.platform_id,
+               DATE_FORMAT(w.start_time, '%Y-%m-%d') as raw_date,
+               DATE_FORMAT(w.start_time, '%H:%i') as raw_start_time,
+               DATE_FORMAT(w.end_time, '%H:%i') as raw_end_time,
+               
                (SELECT COUNT(*) FROM enrollments e WHERE e.workshop_id = w.workshop_id) as enrolled_count
         FROM workshops w
         LEFT JOIN categories c ON w.category_id = c.category_id
@@ -135,7 +143,81 @@ class WorkshopController {
         .json({ message: "เกิดข้อผิดพลาดในการบันทึกข้อมูลลง Database" });
     }
   }
-  // 🌟 1. ดึงรายการ Workshop ที่รออนุมัติ (status = 'pending')
+  //ฟังก์ชันสำหรับแก้ไขข้อมูล Workshop
+  async updateWorkshop(req, res) {
+    try {
+      const { id } = req.params; // รับ ID ของงานจาก URL
+      const organizerId = req.user.id; // ดึง ID ของคนที่ล็อคอินอยู่มาเช็คสิทธิ์
+
+      const {
+        name,
+        date,
+        startTime,
+        endTime,
+        location,
+        speaker,
+        seats,
+        description,
+        categoryId,
+        platformId,
+      } = req.body;
+
+      // ตรวจสอบข้อมูลเบื้องต้น
+      if (
+        !name ||
+        !date ||
+        !startTime ||
+        !location ||
+        !seats ||
+        !categoryId ||
+        !platformId
+      ) {
+        return res
+          .status(400)
+          .json({ message: "กรุณากรอกข้อมูลสำคัญให้ครบถ้วน" });
+      }
+
+      // แปลงวันที่และเวลาให้เป็น DATETIME ของ MySQL (YYYY-MM-DD HH:MM:SS)
+      const start_time_db = `${date} ${startTime}:00`;
+      const end_time_db = endTime ? `${date} ${endTime}:00` : start_time_db;
+
+      // สั่ง SQL เพื่ออัปเดตข้อมูล
+      // (สำคัญ: เช็ค WHERE organizer_id = ? ด้วย ป้องกันคนอื่นมาแอบแก้ข้ามงาน)
+      const [result] = await pool.execute(
+        `UPDATE workshops 
+         SET title = ?, description = ?, speaker_name = ?, start_time = ?, end_time = ?, 
+             max_seats = ?, location_detail = ?, category_id = ?, platform_id = ?
+         WHERE workshop_id = ? AND organizer_id = ?`,
+        [
+          name,
+          description || null,
+          speaker || null,
+          start_time_db,
+          end_time_db,
+          seats,
+          location,
+          categoryId,
+          platformId,
+          id,
+          organizerId,
+        ],
+      );
+
+      if (result.affectedRows === 0) {
+        return res
+          .status(403)
+          .json({ message: "คุณไม่มีสิทธิ์แก้ไขงานนี้ หรือไม่พบข้อมูลครับ" });
+      }
+
+      res.status(200).json({ message: "📝 อัปเดตข้อมูล Workshop สำเร็จ!" });
+    } catch (error) {
+      console.error("Update Workshop Error:", error.message);
+      res
+        .status(500)
+        .json({ message: "เกิดข้อผิดพลาดในการอัปเดตข้อมูลลง Database" });
+    }
+  }
+  // ดึงรายการ Workshop ที่รออนุมัติ (status = 'pending')
   async getPendingWorkshops(req, res) {
     try {
       // ดึงเฉพาะงานที่ status เป็น pending

@@ -121,7 +121,13 @@ export default function MyWorkshopsPage() {
                         to={`/workshop/${ws.id}`}
                         className="btn btn-sm btn-outline btn-info"
                       >
-                        🔍 ดูรายละเอียด
+                        ดูรายละเอียด
+                      </Link>
+                      <Link
+                        to={`/edit-workshop/${ws.id}`}
+                        className="btn btn-sm btn-outline btn-warning"
+                      >
+                        แก้ไข
                       </Link>
                     </td>
                   </tr>
