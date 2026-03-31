@@ -6,6 +6,7 @@ const authRoutes = require('./src/routes/authRoutes');
 const workshopRoutes = require("./src/routes/workshopRoutes");
 const enrollmentRoutes = require("./src/routes/enrollmentRoutes");
 const masterRoutes = require("./src/routes/masterRoutes");
+const adminRoutes = require("./src/routes/adminRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -38,6 +39,7 @@ app.use('/api/auth', authRoutes);
 app.use("/api/workshops", workshopRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api", masterRoutes);
+app.use("/api/admin", adminRoutes);
 
 // เริ่มเปิด Server (ต้องมีแค่อันเดียว และอยู่ล่างสุดเสมอ!)
 app.listen(PORT, () => {
