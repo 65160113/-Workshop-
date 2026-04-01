@@ -169,7 +169,7 @@ export default function RegisterPage() {
                 <input
                   type="email"
                   name="email"
-                  placeholder="example@email.com"
+                  placeholder="example@buu.ac.th"
                   className="input input-bordered w-full bg-white border-sky-300 focus:border-sky-500"
                   value={formData.email}
                   onChange={handleChange}
@@ -204,11 +204,12 @@ export default function RegisterPage() {
                 <input
                   type="password"
                   name="password"
-                  placeholder="ตั้งรหัสผ่าน"
-                  className="input input-bordered w-full bg-white border-sky-300 focus:border-sky-500"
                   value={formData.password}
                   onChange={handleChange}
+                  placeholder="ตั้งรหัสผ่านอย่างน้อย 6 ตัวอักษร"
+                  minLength="6"
                   required
+                  className="input input-bordered w-full"
                 />
               </div>
               <div className="form-control w-full sm:w-1/2">

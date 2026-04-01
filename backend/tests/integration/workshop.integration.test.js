@@ -32,7 +32,7 @@ app.use(express.json());
 app.use("/api/workshops", workshopRoutes);
 
 // =======================
-// เริ่มต้นการทดสอบ 5 Suites 
+// เริ่มต้นการทดสอบ 12 Suites 
 // =======================
 describe("🔗 Workshop API Integration Tests", () => {
   // ล้างค่า Mock ทุกครั้งก่อนเริ่มเทสใหม่
@@ -260,6 +260,7 @@ describe("🔗 Workshop API Integration Tests", () => {
       expect(res.body.message).toContain("ไม่พบข้อมูล");
     });
   });
+
   describe("Suite 12: กวาดเก็บ Error Handling (Database ล่ม)", () => {
     it("ควรคืนค่า 500 เมื่อ DB พังตอนเช็คสถานะการสมัคร", async () => {
       // แกล้งทำให้ DB พัง (mockRejectedValueOnce จะพังแค่รอบเดียว)

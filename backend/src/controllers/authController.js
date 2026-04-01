@@ -5,7 +5,7 @@ const { pool } = require("../config/db.config");
 class AuthController {
   async register(req, res) {
     try {
-      // 🌟 รับค่ามาให้ครบ
+      // รับค่ามาให้ครบ
       const {
         username,
         password,
@@ -28,6 +28,21 @@ class AuthController {
           .status(400)
           .json({ message: "กรุณากรอกข้อมูลให้ครบถ้วน และเลือกคณะด้วยครับ" });
       }
+      
+      if (password.length < 6) {
+        return res
+          .status(400)
+          .json({ message: "รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษรครับ" });
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res
+          .status(400)
+          .json({
+            message: "รูปแบบอีเมลไม่ถูกต้องครับ (เช่น example@buu.ac.th)",
+          });
+      }
 
       const newUser = await authService.register({
         username,
@@ -39,7 +54,7 @@ class AuthController {
         role: role || "student",
       });
 
-      // 4. ตอบกลับหน้าบ้านว่าสมัครสำเร็จ
+      // ตอบกลับหน้าบ้านว่าสมัครสำเร็จ
       res.status(201).json({
         message: "สมัครสมาชิกสำเร็จ!",
         user: newUser,
@@ -60,7 +75,7 @@ class AuthController {
     }
   }
 
-  // 🌟 คืนชีพฟังก์ชัน login ตัวเต็มตรงนี้ครับ!
+  // คืนชีพฟังก์ชัน login ตัวเต็ม!
   async login(req, res) {
     try {
       const { username, password } = req.body;
@@ -95,7 +110,7 @@ class AuthController {
       res.status(500).json({ message: "เกิดข้อผิดพลาดที่เซิร์ฟเวอร์" });
     }
   }
-  // 🌟 2. เพิ่มฟังก์ชันดึงข้อมูลโปรไฟล์ของตัวเอง
+  // เพิ่มฟังก์ชันดึงข้อมูลโปรไฟล์ของตัวเอง
   async getMyProfile(req, res) {
     try {
       // req.user.id ถูกแกะมาจาก Token โดย Middleware
