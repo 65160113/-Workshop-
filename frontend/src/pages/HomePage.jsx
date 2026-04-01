@@ -30,7 +30,7 @@ export default function HomePage() {
     fetchWorkshops();
   }, []);
 
-  // 🌟 3. ลอจิกการกรองข้อมูล (Filter)
+  // ลอจิกการกรองข้อมูล (Filter)
   const filteredWorkshops = workshops.filter((ws) => {
     // กรองชื่อ (พิมพ์ตัวเล็กตัวใหญ่ก็เจอ เพราะจับแปลงเป็น toLowerCase หมด)
     const matchSearch = ws.name
@@ -56,7 +56,7 @@ export default function HomePage() {
           Workshop Online Registration
         </h1>
 
-        {/* 👇 🌟 โซนค้นหาและกรองข้อมูล (Search & Filter Bar) 👇 */}
+        {/* โซนค้นหาและกรองข้อมูล (Search & Filter Bar) */}
         <div className="w-full max-w-4xl bg-white p-6 rounded-2xl shadow-md border border-sky-100 mb-10 flex flex-col md:flex-row gap-4">
           <div className="flex-1 form-control">
             <input
@@ -87,15 +87,15 @@ export default function HomePage() {
         <div className="w-full max-w-4xl flex flex-col gap-8">
           {loading ? (
             <div className="text-center text-sky-700 text-xl">
-              กำลังโหลดข้อมูล... ⏳
+              กำลังโหลดข้อมูล... 
             </div>
           ) : filteredWorkshops.length === 0 ? (
             <div className="text-center text-sky-700 text-xl">
-              ยังไม่มี Workshop ในระบบตอนนี้ครับ 😅
+              ยังไม่มี Workshop ในระบบตอนนี้ครับ 
             </div>
           ) : (
             filteredWorkshops.map((ws) => {
-              // 🌟 คำนวณที่นั่งคงเหลือ
+              // คำนวณที่นั่งคงเหลือ
               const enrolledCount = ws.enrolled_count || 0;
               const remainingSeats = ws.seats - enrolledCount;
               const isFull = remainingSeats <= 0;
@@ -103,10 +103,10 @@ export default function HomePage() {
               return (
                 <div
                   key={ws.id}
-                  // 🌟 เพิ่ม relative เพื่อให้ Badge เกาะติดมุมการ์ด
+                  // เพิ่ม relative เพื่อให้ Badge เกาะติดมุมการ์ด
                   className="card bg-sky-100 shadow-xl border border-sky-200 p-8 rounded-2xl flex flex-col relative"
                 >
-                  {/* 👇 ป้าย Badge แปะมุมขวาบน 👇 */}
+                  {/* ป้าย Badge แปะมุมขวาบน */}
                   <div className="absolute top-6 right-6">
                     {isFull ? (
                       <span className="badge bg-red-500 text-white py-3 px-4 shadow-sm font-bold border-none">
@@ -119,7 +119,6 @@ export default function HomePage() {
                     )}
                   </div>
 
-                  {/* เพิ่ม pr-24 (padding-right) เพื่อไม่ให้ชื่อยาวๆ ไปทับ Badge */}
                   <h2 className="text-2xl font-bold text-sky-900 mb-6 pr-24">
                     {ws.name}
                   </h2>

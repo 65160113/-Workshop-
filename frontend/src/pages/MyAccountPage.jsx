@@ -11,7 +11,7 @@ export default function MyAccountPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [myWorkshops, setMyWorkshops] = useState([]);
 
-  // 🌟 เพิ่ม State สำหรับ Profile
+  // เพิ่ม State สำหรับ Profile
   const [profile, setProfile] = useState(null);
 
   // ดึง Role จากกระเป๋า
@@ -28,7 +28,7 @@ export default function MyAccountPage() {
       setIsLoggedIn(true);
 
       try {
-        // 🌟 1. ลองดึงข้อมูล Profile (ถ้าหลังบ้านยังไม่มี API นี้ โค้ดจะไม่พังครับ มันจะข้ามไปเอง)
+        // ลองดึงข้อมูล Profile 
         try {
           const profileRes = await axios.get(
             `${API_URL}/api/auth/me`,
@@ -41,7 +41,7 @@ export default function MyAccountPage() {
           console.log("Profile API status:", err.message);
         }
 
-        // 🌟 2. ดึงข้อมูลตั๋ว (ดึงเฉพาะคนที่ "ไม่ใช่" แอดมิน)
+        // ดึงข้อมูลตั๋ว (ดึงเฉพาะคนที่ "ไม่ใช่" แอดมิน)
         if (userRole !== "admin" && userRole !== "approver") {
           const res = await axios.get(
             `${API_URL}/api/enrollments/my-workshops`, 
@@ -73,7 +73,7 @@ export default function MyAccountPage() {
       <Navbar />
 
       <main className="grow flex flex-col items-center py-12 px-4">
-        {/* 👤 โซนที่ 1: Profile Card (อัปเกรดเพิ่มเข้ามาใหม่!) */}
+        {/* โซนที่ 1: Profile Card */}
         <div className="w-full max-w-4xl bg-white shadow-md rounded-2xl border border-sky-100 p-8 mb-10 flex flex-col sm:flex-row items-center gap-6">
           <div className="avatar placeholder">
             <div className="bg-sky-200 text-sky-800 rounded-full w-24 h-24 flex items-center justify-center text-4xl font-bold border-4 border-white shadow-sm">
@@ -97,7 +97,7 @@ export default function MyAccountPage() {
           </div>
         </div>
 
-        {/* 🎫 โซนที่ 2: ตั๋วและตาราง (ของเดิมลูกพี่ + ดัก Admin) */}
+        {/* โซนที่ 2: ตั๋วและตาราง */}
         <div className="w-full max-w-4xl flex justify-start mb-6">
           <h1 className="text-2xl font-bold text-sky-900">
             My Registered Workshops
@@ -105,17 +105,17 @@ export default function MyAccountPage() {
         </div>
 
         {userRole === "admin" || userRole === "approver" ? (
-          // 🔴 ถ้าเป็น Admin ให้โชว์กล่องข้อความนี้แทนตาราง
+          // ถ้าเป็น Admin ให้โชว์กล่องข้อความนี้แทนตาราง
           <div className="w-full max-w-4xl text-center py-12 bg-sky-50 rounded-2xl border border-sky-100">
             <h2 className="text-2xl font-bold text-amber-600 mb-2">
-              👑 โหมดผู้ดูแลระบบ
+              โหมดผู้ดูแลระบบ
             </h2>
             <p className="text-sky-700 text-lg font-medium">
               บัญชีของคุณไม่มีประวัติการลงทะเบียนเวิร์กชอปครับ
             </p>
           </div>
         ) : (
-          // 🟢 ถ้าไม่ใช่ Admin ให้โชว์ตารางเดิมของลูกพี่เลย!
+          // ถ้าไม่ใช่ Admin ให้โชว์ตารางเดิม!
           <div className="w-full max-w-4xl bg-white shadow-xl rounded-xl overflow-hidden border border-sky-200">
             <div className="overflow-x-auto">
               <table className="table w-full text-center text-lg">
@@ -137,7 +137,7 @@ export default function MyAccountPage() {
                         colSpan="3"
                         className="py-12 text-center text-gray-500 bg-sky-50/30"
                       >
-                        คุณยังไม่ได้ลงทะเบียน Workshop ใดๆ ครับ 😅
+                        คุณยังไม่ได้ลงทะเบียน Workshop ใดๆ ครับ 
                       </td>
                     </tr>
                   ) : (

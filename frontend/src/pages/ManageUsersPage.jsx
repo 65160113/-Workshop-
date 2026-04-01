@@ -102,7 +102,7 @@ export default function ManageUsersPage() {
                         value={u.role}
                         onChange={(e) => handleRoleChange(u.id, e.target.value)}
                       >
-                        <option value="user">USER</option>
+                        <option value="user">STUDENT</option>
                         <option value="organizer">ORGANIZER</option>
                         <option value="approver">APPROVER</option>
                         <option value="admin">ADMIN</option>

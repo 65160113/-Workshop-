@@ -36,7 +36,7 @@ export default function LoginPage() {
       // ลบ alert ทิ้งไปเลยครับ เพื่อตัดปัญหาเบราว์เซอร์บล็อค
       navigate(from);
     } catch (err) {
-      console.error("❌ 6. พังจ้าาา เจอ Error:", err);
+      console.error("พังจ้าาา เจอ Error:", err);
       setErrorMsg(
         err.response?.data?.message || "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้",
       );
@@ -102,7 +102,6 @@ export default function LoginPage() {
               </button>
             </div>
 
-            {/* 👇 ย้ายข้อความ "สมัครสมาชิก" มาไว้ตรงนี้ครับ (ใต้ปุ่ม Login) 👇 */}
             <div className="text-center mt-4 text-sm text-sky-800">
               ยังไม่มีบัญชีใช่ไหม?{" "}
               <Link

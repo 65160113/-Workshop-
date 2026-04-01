@@ -14,7 +14,7 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    confirmPassword: "", // 🌟 1. เพิ่ม State มารับค่ายืนยันรหัสผ่าน
+    confirmPassword: "", 
     email: "",
     firstName: "",
     lastName: "",
@@ -48,7 +48,7 @@ export default function RegisterPage() {
     setErrorMsg("");
     setIsSubmitting(true);
 
-    // 🌟 2. ด่านตรวจเช็ค: รหัสผ่านตรงกันไหม?
+    // ด่านตรวจเช็ค: รหัสผ่านตรงกันไหม?
     if (formData.password !== formData.confirmPassword) {
       setErrorMsg(
         "รหัสผ่าน และ ยืนยันรหัสผ่าน ไม่ตรงกันครับ กรุณาตรวจสอบอีกครั้ง",
@@ -62,7 +62,7 @@ export default function RegisterPage() {
         `${API_URL}/api/auth/register`,
         {
           username: formData.username,
-          password: formData.password, // ส่งแค่ password ตัวจริงไปก็พอ
+          password: formData.password, 
           email: formData.email,
           firstName: formData.firstName,
           lastName: formData.lastName,
@@ -71,7 +71,7 @@ export default function RegisterPage() {
         },
       );
 
-      alert("🎉 สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบครับ");
+      alert("สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบครับ");
       navigate("/login", { state: { from: from } });
     } catch (error) {
       setErrorMsg(
@@ -89,7 +89,7 @@ export default function RegisterPage() {
       <main className="grow flex items-center justify-center p-4 py-12">
         <div className="card w-full max-w-lg bg-sky-100 shadow-2xl border border-sky-200 p-8 rounded-2xl">
           <h1 className="text-center text-3xl font-bold text-sky-900 mb-8">
-            📝 Register
+            Register
           </h1>
 
           {errorMsg && (
@@ -193,7 +193,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* 🌟 แถวที่ 4: Password และ Confirm Password คู่กันเลย */}
+            {/* แถวที่ 4: Password และ Confirm Password คู่กันเลย */}
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="form-control w-full sm:w-1/2">
                 <label className="label p-1">

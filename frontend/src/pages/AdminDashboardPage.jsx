@@ -8,10 +8,10 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export default function AdminDashboardPage() {
   const [workshops, setWorkshops] = useState([]);
-  const [stats, setStats] = useState(null); 
+  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [userRole, setUserRole] = useState(""); 
+  const [userRole, setUserRole] = useState("");
 
   const fetchData = useCallback(async () => {
     try {
@@ -25,7 +25,7 @@ export default function AdminDashboardPage() {
 
       // อัปเดตให้เช็คว่า ถ้า "ไม่ใช่ทั้ง admin และไม่ใช่ทั้ง approver" ค่อยเตะออก
       if (payload.role !== "admin" && payload.role !== "approver") {
-        alert("พื้นที่หวงห้าม! เฉพาะผู้ดูแลระบบและผู้อนุมัติเท่านั้นครับ 🛑");
+        alert("พื้นที่หวงห้าม! เฉพาะผู้ดูแลระบบและผู้อนุมัติเท่านั้นครับ");
         navigate("/");
         return;
       }
@@ -34,7 +34,7 @@ export default function AdminDashboardPage() {
 
       const [pendingRes, statsRes] = await Promise.all([
         axios.get(`${API_URL}/api/workshops/pending`, {
-          headers: { Authorization: `Bearer ${token}` }, 
+          headers: { Authorization: `Bearer ${token}` },
         }),
         axios.get(`${API_URL}/api/admin/stats`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -54,7 +54,7 @@ export default function AdminDashboardPage() {
     fetchData();
   }, [fetchData]);
 
-  // ฟังก์ชันจัดการปุ่ม Approve / Reject
+  // ฟังก์ชันจัดการปุ่ม Approve / Reject (เวอร์ชันพกบัตร Token)
   const handleUpdateStatus = async (id, statusName) => {
     const isConfirm = window.confirm(
       `คุณแน่ใจหรือไม่ที่จะ ${statusName} งานนี้?`,
@@ -62,12 +62,21 @@ export default function AdminDashboardPage() {
     if (!isConfirm) return;
 
     try {
-      await axios.patch(`${API_URL}/api/workshops/${id}/status`, {
-        status: statusName,
-      });
+      // 1. ควักบัตร Token ออกมาจากกระเป๋า (localStorage)
+      const token = localStorage.getItem("token");
+
+      // 2. ยื่นบัตร (Headers) ไปพร้อมกับการอัปเดตข้อมูล
+      await axios.patch(
+        `${API_URL}/api/workshops/${id}/status`,
+        { status: statusName },
+        {
+          headers: { Authorization: `Bearer ${token}` }, 
+        },
+      );
+
       alert(`อัปเดตสถานะเป็น ${statusName} เรียบร้อยแล้ว! 🎉`);
 
-      // อัปเดตเสร็จปุ๊บ สั่งให้โหลดข้อมูลใหม่ (ตารางจะได้หายไป และตัวเลขสถิติจะได้อัปเดตทันที!)
+      // อัปเดตเสร็จปุ๊บ สั่งให้โหลดข้อมูลใหม่
       fetchData();
     } catch (error) {
       alert(error.response?.data?.message || "เกิดข้อผิดพลาดในการอัปเดตสถานะ");
@@ -82,21 +91,21 @@ export default function AdminDashboardPage() {
         <div className="w-full max-w-6xl">
           <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
             <h1 className="text-3xl font-bold text-sky-900 flex items-center gap-3 mb-0">
-              👑 Admin Dashboard
+              Admin Dashboard
             </h1>
             {userRole === "admin" && (
               <Link
                 to="/admin/manage-users"
                 className="btn bg-indigo-600 text-white hover:bg-indigo-700 border-none rounded-full shadow-md px-6 text-base"
               >
-                👥 จัดการผู้ใช้งาน
+                จัดการผู้ใช้งาน
               </Link>
             )}
           </div>
 
           {loading ? (
             <div className="text-center text-sky-700 text-xl mt-10">
-              กำลังโหลดข้อมูล... ⏳
+              กำลังโหลดข้อมูล... 
             </div>
           ) : (
             <>
@@ -147,7 +156,7 @@ export default function AdminDashboardPage() {
 
               {/* ตารางจัดการงานที่รออนุมัติ (Table) */}
               <h2 className="text-2xl font-bold text-sky-800 mb-6 flex items-center gap-3">
-                📝 รายการ Workshop รออนุมัติ
+                รายการ Workshop รออนุมัติ
                 <span className="text-base font-normal bg-amber-100 text-amber-700 px-3 py-1 rounded-full">
                   มี {workshops.length} งาน
                 </span>
@@ -155,7 +164,7 @@ export default function AdminDashboardPage() {
 
               {workshops.length === 0 ? (
                 <div className="bg-sky-50 border border-sky-200 rounded-2xl p-10 text-center text-sky-700 text-xl font-semibold shadow-sm">
-                  🎉 เย้! ไม่มี Workshop ค้างรออนุมัติแล้วครับ
+                  เย้! ไม่มี Workshop ค้างรออนุมัติแล้วครับ
                 </div>
               ) : (
                 <div className="overflow-x-auto bg-white rounded-2xl shadow-xl border border-sky-100">

@@ -13,7 +13,7 @@ export default function WorkshopDetailPage() {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
 
-  // 🌟 เพิ่ม State ไว้เก็บข้อมูลของคนที่ล็อคอิน
+  // เพิ่ม State ไว้เก็บข้อมูลของคนที่ล็อคอิน
   const [currentUserRole, setCurrentUserRole] = useState(null);
   const [currentUserId, setCurrentUserId] = useState(null);
 
@@ -24,11 +24,11 @@ export default function WorkshopDetailPage() {
       return;
     }
 
-    // 🌟 แอบแกะ Token เพื่อดู Role และ ID ของคนที่ล็อคอินอยู่
+    // แอบแกะ Token เพื่อดู Role และ ID ของคนที่ล็อคอินอยู่
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
       setCurrentUserRole(payload.role);
-      setCurrentUserId(payload.id); // สมมติว่าใน Token มี id แนบมาด้วย (ถ้าไม่มีเดี๋ยวเราค่อยไปแก้ฝั่ง backend login)
+      setCurrentUserId(payload.id); 
     } catch (error) {
       console.error("Token decoding error:", error);
     }
@@ -61,7 +61,7 @@ export default function WorkshopDetailPage() {
         { headers: { Authorization: `Bearer ${token}` } },
       );
 
-      alert(`🎉 ยืนยันการลงทะเบียน: ${workshop.name} สำเร็จ!`);
+      alert(`ยืนยันการลงทะเบียน: ${workshop.name} สำเร็จ!`);
       navigate("/my-account");
     } catch (error) {
       alert(error.response?.data?.message || "เกิดข้อผิดพลาดในการลงทะเบียน");
@@ -71,23 +71,23 @@ export default function WorkshopDetailPage() {
   if (loading)
     return (
       <div className="min-h-screen flex items-center justify-center bg-base-100 text-sky-700 text-xl font-bold">
-        กำลังโหลดข้อมูล... ⏳
+        กำลังโหลดข้อมูล...
       </div>
     );
   if (!workshop)
     return (
       <div className="min-h-screen flex items-center justify-center bg-base-100 text-red-500 text-xl font-bold">
-        ไม่พบข้อมูล Workshop นี้ครับ 😅
+        ไม่พบข้อมูล Workshop นี้ครับ
       </div>
     );
 
-  // 🌟 ลอจิกสำหรับตัดสินใจว่าจะโชว์ปุ่มอะไร?
+  // ลอจิกสำหรับตัดสินใจว่าจะโชว์ปุ่มอะไร?
   const renderActionButton = () => {
     // 1. ถ้าเป็น Admin หรือ Approver -> โชว์ข้อความเฉยๆ ไม่ให้กด
     if (currentUserRole === "admin" || currentUserRole === "approver") {
       return (
         <div className="text-center text-sky-800 font-semibold bg-sky-50 p-4 rounded-xl border border-sky-200">
-          👑 คุณอยู่ในโหมดผู้ดูแลระบบ (Admin)
+          คุณอยู่ในโหมดผู้ดูแลระบบ (Admin)
           <br />
           ไม่สามารถลงทะเบียนได้
         </div>
@@ -126,7 +126,7 @@ export default function WorkshopDetailPage() {
           disabled
           className="btn bg-gray-300 text-gray-500 w-full sm:w-64 rounded-full text-xl border-none h-14 cursor-not-allowed"
         >
-          ที่นั่งเต็มแล้ว 😭
+          ที่นั่งเต็มแล้ว 
         </button>
       );
     }
@@ -194,7 +194,7 @@ export default function WorkshopDetailPage() {
             </div>
           </div>
 
-          {/* 👇 3. เอาฟังก์ชันที่ตัดสินใจแล้วมาวางโชว์ตรงนี้ 👇 */}
+          {/* เอาฟังก์ชันที่ตัดสินใจแล้วมาวางโชว์ตรงนี้ */}
           <div className="flex justify-center mt-4">{renderActionButton()}</div>
         </div>
       </main>

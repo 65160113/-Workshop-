@@ -11,11 +11,11 @@ export default function CreateWorkshopPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 🌟 สร้าง State มารับข้อมูล Dropdown จากหลังบ้าน
+  // สร้าง State มารับข้อมูล Dropdown จากหลังบ้าน
   const [categories, setCategories] = useState([]);
   const [platforms, setPlatforms] = useState([]);
 
-  // 🌟 เพิ่ม categoryId และ platformId ในกล่องเก็บข้อมูลฟอร์ม
+  // เพิ่ม categoryId และ platformId ในกล่องเก็บข้อมูลฟอร์ม
   const [formData, setFormData] = useState({
     name: "",
     categoryId: "",
@@ -43,7 +43,7 @@ export default function CreateWorkshopPage() {
       const payload = JSON.parse(atob(token.split(".")[1]));
       if (payload.role !== "admin" && payload.role !== "organizer") {
         alert(
-          "⛔ เฉพาะผู้จัดอบรมหรือแอดมินเท่านั้น ที่สามารถสร้าง Workshop ได้ครับ",
+          "เฉพาะผู้จัดอบรมหรือแอดมินเท่านั้น ที่สามารถสร้าง Workshop ได้ครับ",
         );
         navigate("/");
         return; // เด้งแล้วจบการทำงานเลย
@@ -55,7 +55,7 @@ export default function CreateWorkshopPage() {
       return;
     }
 
-    // 🌟 ฟังก์ชันวิ่งไปดูดข้อมูล Category กับ Platform มาทำ Dropdown
+    // ฟังก์ชันวิ่งไปดูดข้อมูล Category กับ Platform มาทำ Dropdown
     const fetchMasterData = async () => {
       try {
         // ยิง API ไปหลังบ้านพร้อมกัน 2 เส้นเพื่อความไว!
@@ -107,18 +107,18 @@ export default function CreateWorkshopPage() {
         description: formData.description,
       };
 
-      // 🌟 แนบ Token ไปกับ Headers ตอนยิง API ด้วย!
+      // แนบ Token ไปกับ Headers ตอนยิง API ด้วย!
       await axios.post(
         `${API_URL}/api/workshops`,
         payload,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // 👈 โชว์บัตร!
+            Authorization: `Bearer ${token}`, // โชว์บัตร!
           },
         },
       );
 
-      alert("🎉 สร้าง Workshop ใหม่สำเร็จเรียบร้อยครับ!");
+      alert("สร้าง Workshop ใหม่สำเร็จเรียบร้อยครับ!");
       navigate("/");
     } catch (error) {
       setErrorMsg(
@@ -136,7 +136,7 @@ export default function CreateWorkshopPage() {
       <main className="grow flex items-center justify-center p-4 py-12">
         <div className="card w-full max-w-2xl bg-sky-100 shadow-2xl border border-sky-200 p-8 md:p-10 rounded-2xl">
           <h1 className="text-center text-3xl font-bold text-sky-900 mb-8 border-b-2 border-sky-200 pb-4">
-            ➕ Create New Workshop
+            Create New Workshop
           </h1>
 
           {errorMsg && (
@@ -163,7 +163,7 @@ export default function CreateWorkshopPage() {
               />
             </div>
 
-            {/* 👇 แถว 1.5: หมวดหมู่ (Category) และ แพลตฟอร์ม (Platform) 👇 */}
+            {/* แถว 1.5: หมวดหมู่ (Category) และ แพลตฟอร์ม (Platform) */}
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="form-control w-full sm:w-1/2">
                 <label className="label p-1">

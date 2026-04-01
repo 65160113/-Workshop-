@@ -18,7 +18,7 @@ export default function MyWorkshopsPage() {
   const fetchMyWorkshops = async () => {
     try {
       const token = localStorage.getItem("token");
-      // 🌟 เรียก API หลังบ้านเพื่อดึงเฉพาะงานของ "ฉัน"
+      // เรียก API หลังบ้านเพื่อดึงเฉพาะงานของ "ฉัน"
       const res = await axios.get(
         `${API_URL}/api/workshops/my-workshops`,
         {
@@ -67,13 +67,13 @@ export default function MyWorkshopsPage() {
       <main className="grow container mx-auto px-4 py-8 max-w-5xl">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-sky-900">
-            🛠️ งานเวิร์กชอปของฉัน
+            งานเวิร์กชอปของฉัน
           </h1>
           <Link
             to="/create-workshop"
             className="btn bg-sky-600 hover:bg-sky-700 text-white border-none shadow-md"
           >
-            ➕ สร้างงานใหม่
+            สร้างงานใหม่
           </Link>
         </div>
 

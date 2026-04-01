@@ -8,7 +8,7 @@ export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const from = location.state?.from || "/";
 
-  // 🌟 1. สร้างกล่องเก็บยศ (Role) ของคนที่ล็อคอิน
+  // สร้างกล่องเก็บยศ (Role) ของคนที่ล็อคอิน
   const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function Navbar() {
     if (token) {
       setIsLoggedIn(true);
 
-      // 🌟 2. แอบแกะ Token เพื่อดูว่าคนนี้ยศอะไร
+      // แอบแกะ Token เพื่อดูว่าคนนี้ยศอะไร
       try {
         const payload = JSON.parse(atob(token.split(".")[1]));
         setUserRole(payload.role); // เก็บยศใส่กล่องไว้
@@ -30,8 +30,8 @@ export default function Navbar() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     setIsLoggedIn(false);
-    setUserRole(null); // 🌟 เคลียร์ยศทิ้งตอนล็อคเอาท์ด้วย
-    alert("👋 ออกจากระบบเรียบร้อยแล้วครับ");
+    setUserRole(null); // เคลียร์ยศทิ้งตอนล็อคเอาท์ด้วย
+    alert("ออกจากระบบเรียบร้อยแล้วครับ");
     navigate("/");
   };
 
@@ -45,33 +45,23 @@ export default function Navbar() {
       <div className="text-sky-900 text-lg font-semibold flex items-center">
         {isLoggedIn ? (
           <>
-            {/* 🌟 ปุ่ม: โชว์ปุ่ม Admin Dashboard เฉพาะ admin หรือ approver */}
+            {/* ปุ่ม: โชว์ปุ่ม Admin Dashboard เฉพาะ admin หรือ approver */}
             {(userRole === "admin" || userRole === "approver") && (
               <Link
                 to="/admin"
                 className="mr-6 text-amber-600 hover:text-amber-800 transition-colors font-bold flex items-center gap-1"
               >
-                👑 Admin Dashboard
+                Admin Dashboard
               </Link>
             )}
 
-            {/* 🌟 ปุ่ม: โชว์ My Workshops เฉพาะ Organizer (และ Admin) 👇 */}
+            {/* ปุ่ม: โชว์ My Workshops เฉพาะ Organizer (และ Admin) */}
             {(userRole === "organizer" || userRole === "admin") && (
               <Link
                 to="/my-workshops"
                 className="mr-6 text-sky-700 hover:text-sky-900 transition-colors font-bold"
               >
-                🛠️ My Workshops
-              </Link>
-            )}
-
-            {/* 🌟 ปุ่ม: โชว์เฉพาะ Admin หรือ Organizer เท่านั้น */}
-            {(userRole === "admin" || userRole === "organizer") && (
-              <Link
-                to="/create-workshop"
-                className="mr-6 text-sky-700 hover:text-sky-900 transition-colors font-bold"
-              >
-                ➕ Create Workshop
+                My Workshops
               </Link>
             )}
 

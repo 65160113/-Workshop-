@@ -29,7 +29,7 @@ export default function EditWorkshopPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // 🌟 ดึงข้อมูลเดิมมาใส่ฟอร์ม ตอนเปิดหน้าเว็บ
+  // ดึงข้อมูลเดิมมาใส่ฟอร์ม ตอนเปิดหน้าเว็บ
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -86,12 +86,12 @@ export default function EditWorkshopPage() {
     try {
       const token = localStorage.getItem("token");
 
-      // 🌟 ยิง PUT ไปหา API แก้ไขที่เราทำไว้
+      // ยิง PUT ไปหา API แก้ไขที่เราทำไว้
       await axios.put(`${API_URL}/api/workshops/${id}`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      alert("✅ อัปเดตข้อมูล Workshop สำเร็จ!");
+      alert("อัปเดตข้อมูล Workshop สำเร็จ!");
       navigate("/my-workshops"); // กลับไปหน้างานของฉัน
     } catch (error) {
       setErrorMsg(error.response?.data?.message || "เกิดข้อผิดพลาดในการอัปเดต");
@@ -115,7 +115,7 @@ export default function EditWorkshopPage() {
       <main className="grow flex items-center justify-center p-4 py-12">
         <div className="card w-full max-w-2xl bg-sky-100 shadow-2xl border border-sky-200 p-8 rounded-2xl">
           <h1 className="text-center text-3xl font-bold text-sky-900 mb-8">
-            ✏️ แก้ไขข้อมูล Workshop
+            แก้ไขข้อมูล Workshop
           </h1>
 
           {errorMsg && (
@@ -316,7 +316,7 @@ export default function EditWorkshopPage() {
                 className={`btn bg-sky-600 text-white hover:bg-sky-700 w-full rounded-full text-lg shadow-md border-none ${isSubmitting ? "loading" : ""}`}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "กำลังบันทึก..." : "💾 บันทึกการแก้ไข"}
+                {isSubmitting ? "กำลังบันทึก..." : "บันทึกการแก้ไข"}
               </button>
             </div>
           </form>
