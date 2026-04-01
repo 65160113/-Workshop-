@@ -1,0 +1,32 @@
+name: Backend CI Tests
+
+# สั่งให้หุ่นยนต์ทำงานตอนที่มีการ Push หรือ Pull Request เข้ากิ่ง main
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # จำลองเครื่องคอมพิวเตอร์ระบบ Linux (Ubuntu) บนคลาวด์
+
+    # สำคัญมาก! บังคับให้มันเข้าไปทำงานในโฟลเดอร์ backend
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+    - name: ดึงโค้ดล่าสุดจาก Repository
+      uses: actions/checkout@v3
+
+    - name: ติดตั้ง Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x' # ใช้ Node.js เวอร์ชั่น 18
+
+    - name: ติดตั้ง Packages ทั้งหมด
+      run: npm install
+
+    - name: สั่งรัน Unit & Integration Test
+      run: npm run test:coverage
