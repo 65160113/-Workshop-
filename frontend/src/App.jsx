@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import MyWorkshopsPage from "./pages/MyWorkshopsPage";
 import EditWorkshopPage from "./pages/EditWorkshopPage";
 import ManageUsersPage from "./pages/ManageUsersPage";
+import WorkshopAttendeesPage from "./pages/WorkshopAttendeesPage";
 
 function App() {
   return (
@@ -54,6 +55,14 @@ function App() {
         />
         <Route path="/edit-workshop/:id" element={<EditWorkshopPage />} />
         <Route path="/admin/manage-users" element={<ManageUsersPage />} />
+        <Route
+          path="/workshop/:id/attendees"
+          element={
+            <ProtectedRoute allowedRoles={["organizer", "admin"]}>
+              <WorkshopAttendeesPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

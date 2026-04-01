@@ -30,13 +30,12 @@ export default function MyWorkshopsPage() {
     }
   };
 
-  // ฟังก์ชันแปลงวันที่เป็นภาษาไทย (เหยียดตรงบรรทัดเดียว)
   const formatThaiDate = (dateString) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
     return date.toLocaleDateString("th-TH", {
       year: "numeric",
-      month: "long",
+      month: "short", // ใช้ชื่อย่อเพื่อให้ประหยัดพื้นที่
       day: "numeric",
     });
   };
@@ -110,11 +109,11 @@ export default function MyWorkshopsPage() {
             <table className="table w-full table-fixed">
               <thead className="bg-sky-200 text-sky-900 text-base">
                 <tr>
-                  <th className="w-[35%]">ชื่องาน</th>
+                  <th className="w-[30%]">ชื่องาน</th>
                   <th className="w-[15%]">วันที่จัดงาน</th>
-                  <th className="w-[20%]">สถานที่</th>
+                  <th className="w-[15%]">สถานที่</th>
                   <th className="w-[15%]">สถานะ</th>
-                  <th className="w-[15%] text-center">จัดการ</th>
+                  <th className="w-[25%] text-center">จัดการ</th>{" "}
                 </tr>
               </thead>
               <tbody>
@@ -141,7 +140,14 @@ export default function MyWorkshopsPage() {
                     </td>
                     <td>{getStatusBadge(ws.status)}</td>
                     <td className="text-center">
-                      <div className="flex gap-2 justify-center">
+                      {/* เติม flex-wrap เผื่อหน้าจอแคบ ปุ่มจะได้เรียงลงมาข้างล่างแทนที่จะพัง */}
+                      <div className="flex flex-wrap gap-2 justify-center">
+                        <Link
+                          to={`/workshop/${ws.id}/attendees`}
+                          className="btn btn-xs sm:btn-sm btn-outline btn-success whitespace-nowrap"
+                        >
+                          รายชื่อ
+                        </Link>
                         <Link
                           to={`/workshop/${ws.id}`}
                           className="btn btn-xs sm:btn-sm btn-outline btn-info whitespace-nowrap"

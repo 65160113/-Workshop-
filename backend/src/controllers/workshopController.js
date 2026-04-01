@@ -299,6 +299,28 @@ class WorkshopController {
         .json({ message: "เกิดข้อผิดพลาดในการดึงข้อมูลงานของคุณ" });
     }
   }
+  async getWorkshopAttendees(req, res) {
+    try {
+      const { id } = req.params;
+
+      const query = `
+        SELECT u.first_name, u.last_name, u.email, e.registered_at 
+        FROM enrollments e
+        JOIN users u ON e.user_id = u.user_id
+        WHERE e.workshop_id = ? AND e.status = 'active'
+        ORDER BY e.registered_at ASC
+      `;
+
+      const [attendees] = await pool.query(query, [id]);
+
+      res.status(200).json(attendees);
+    } catch (error) {
+      console.error("Error fetching attendees:", error);
+      res
+        .status(500)
+        .json({ message: "เกิดข้อผิดพลาดในการดึงรายชื่อผู้สมัคร" });
+    }
+  }
 }
 
 module.exports = new WorkshopController();

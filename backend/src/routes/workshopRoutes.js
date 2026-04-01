@@ -41,6 +41,13 @@ router.post(
 // ดูรายละเอียด Workshop รายตัว
 router.get("/:id", workshopController.getWorkshopById);
 
+router.get(
+  "/:id/attendees",
+  verifyToken,
+  verifyRoles("admin", "organizer"), 
+  workshopController.getWorkshopAttendees,
+);
+
 // อัปเดตสถานะ (Approve/Reject)
 router.patch(
   "/:id/status",
