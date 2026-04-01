@@ -18,13 +18,9 @@ export default function MyWorkshopsPage() {
   const fetchMyWorkshops = async () => {
     try {
       const token = localStorage.getItem("token");
-      // เรียก API หลังบ้านเพื่อดึงเฉพาะงานของ "ฉัน"
-      const res = await axios.get(
-        `${API_URL}/api/workshops/my-workshops`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      const res = await axios.get(`${API_URL}/api/workshops/my-workshops`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setMyWorkshops(res.data);
     } catch (err) {
       console.error("Error fetching my workshops:", err);
@@ -34,29 +30,41 @@ export default function MyWorkshopsPage() {
     }
   };
 
-  // ฟังก์ชันตัวช่วยสำหรับแสดงป้ายสีสถานะ
+  // ฟังก์ชันแปลงวันที่เป็นภาษาไทย (เหยียดตรงบรรทัดเดียว)
+  const formatThaiDate = (dateString) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   const getStatusBadge = (status) => {
     switch (status) {
       case "approved":
         return (
-          <span className="badge badge-success text-white gap-1">
+          <span className="badge badge-success text-white whitespace-nowrap px-3 py-3">
             🟢 อนุมัติแล้ว
           </span>
         );
       case "pending":
         return (
-          <span className="badge badge-warning text-white gap-1">
+          <span className="badge badge-warning text-white whitespace-nowrap px-3 py-3">
             🟡 รอตรวจสอบ
           </span>
         );
       case "rejected":
         return (
-          <span className="badge badge-error text-white gap-1">
+          <span className="badge badge-error text-white whitespace-nowrap px-3 py-3">
             🔴 ไม่อนุมัติ
           </span>
         );
       default:
-        return <span className="badge">{status}</span>;
+        return (
+          <span className="badge whitespace-nowrap px-3 py-3">{status}</span>
+        );
     }
   };
 
@@ -64,7 +72,7 @@ export default function MyWorkshopsPage() {
     <div className="min-h-screen flex flex-col bg-base-100">
       <Navbar />
 
-      <main className="grow container mx-auto px-4 py-8 max-w-5xl">
+      <main className="grow container mx-auto px-4 py-8 max-w-6xl">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-sky-900">
             งานเวิร์กชอปของฉัน
@@ -98,37 +106,55 @@ export default function MyWorkshopsPage() {
             </Link>
           </div>
         ) : (
-          <div className="overflow-x-auto bg-white rounded-2xl shadow-xl border border-sky-100">
-            <table className="table w-full">
+          <div className="overflow-hidden bg-white rounded-2xl shadow-xl border border-sky-100">
+            <table className="table w-full table-fixed">
               <thead className="bg-sky-200 text-sky-900 text-base">
                 <tr>
-                  <th>ชื่องาน</th>
-                  <th>วันที่จัดงาน</th>
-                  <th>สถานที่</th>
-                  <th>สถานะ</th>
-                  <th className="text-center">จัดการ</th>
+                  <th className="w-[35%]">ชื่องาน</th>
+                  <th className="w-[15%]">วันที่จัดงาน</th>
+                  <th className="w-[20%]">สถานที่</th>
+                  <th className="w-[15%]">สถานะ</th>
+                  <th className="w-[15%] text-center">จัดการ</th>
                 </tr>
               </thead>
               <tbody>
                 {myWorkshops.map((ws) => (
-                  <tr key={ws.id} className="hover:bg-sky-50 transition-colors">
-                    <td className="font-bold text-sky-900">{ws.name}</td>
-                    <td>{ws.date}</td>
-                    <td>{ws.location}</td>
+                  <tr
+                    key={ws.id}
+                    className="hover:bg-sky-50 transition-colors align-top"
+                  >
+                    <td>
+                      <p
+                        className="font-bold text-sky-900 truncate"
+                        title={ws.name}
+                      >
+                        {ws.name}
+                      </p>
+                    </td>
+                    <td className="whitespace-nowrap">
+                      {formatThaiDate(ws.date)}
+                    </td>
+                    <td>
+                      <p className="truncate" title={ws.location}>
+                        {ws.location}
+                      </p>
+                    </td>
                     <td>{getStatusBadge(ws.status)}</td>
                     <td className="text-center">
-                      <Link
-                        to={`/workshop/${ws.id}`}
-                        className="btn btn-sm btn-outline btn-info"
-                      >
-                        ดูรายละเอียด
-                      </Link>
-                      <Link
-                        to={`/edit-workshop/${ws.id}`}
-                        className="btn btn-sm btn-outline btn-warning"
-                      >
-                        แก้ไข
-                      </Link>
+                      <div className="flex gap-2 justify-center">
+                        <Link
+                          to={`/workshop/${ws.id}`}
+                          className="btn btn-xs sm:btn-sm btn-outline btn-info whitespace-nowrap"
+                        >
+                          รายละเอียด
+                        </Link>
+                        <Link
+                          to={`/edit-workshop/${ws.id}`}
+                          className="btn btn-xs sm:btn-sm btn-outline btn-warning whitespace-nowrap"
+                        >
+                          แก้ไข
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}
