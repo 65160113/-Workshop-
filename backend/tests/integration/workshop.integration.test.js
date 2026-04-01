@@ -215,4 +215,104 @@ describe("🔗 Workshop API Integration Tests", () => {
       expect(res.body.message).toBe("เกิดข้อผิดพลาดในการดึงข้อมูล Workshop");
     });
   });
+
+  // Suite 10: ทดสอบการเช็คสถานะการสมัคร (checkEnrollmentStatus)
+  describe("Suite 10: GET /api/workshops/:id/check-enrollment", () => {
+    it("ควรคืนค่า isEnrolled: true ถ้าเจอประวัติการสมัคร", async () => {
+      // จำลองว่า DB เจอข้อมูล
+      pool.query.mockResolvedValue([[{ workshop_id: 1, status: "active" }]]);
+
+      const res = await request(app).get("/api/workshops/1/check-enrollment");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.isEnrolled).toBe(true);
+    });
+
+    it("ควรคืนค่า isEnrolled: false ถ้าไม่เคยสมัคร", async () => {
+      // จำลองว่า DB ว่างเปล่า
+      pool.query.mockResolvedValue([[]]);
+
+      const res = await request(app).get("/api/workshops/1/check-enrollment");
+      expect(res.statusCode).toBe(200);
+      expect(res.body.isEnrolled).toBe(false);
+    });
+  });
+
+  // Suite 11: ทดสอบการยกเลิกการสมัคร (cancelEnrollment)
+  describe("Suite 11: PATCH /api/workshops/:id/cancel", () => {
+    it("ควรคืนค่า 200 เมื่อยกเลิกสำเร็จ (Update ผ่าน)", async () => {
+      // จำลองว่า Update DB สำเร็จ 1 แถว
+      pool.execute.mockResolvedValue([{ affectedRows: 1 }]);
+
+      const res = await request(app).patch("/api/workshops/1/cancel");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.message).toContain("ยกเลิก");
+    });
+
+    it("ควรคืนค่า 400 เมื่อไม่มีข้อมูลให้ยกเลิก หรือกดยกเลิกซ้ำ", async () => {
+      // จำลองว่า Update DB ไม่สำเร็จ (หาไม่เจอ)
+      pool.execute.mockResolvedValue([{ affectedRows: 0 }]);
+
+      const res = await request(app).patch("/api/workshops/99/cancel");
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.message).toContain("ไม่พบข้อมูล");
+    });
+  });
+  describe("Suite 12: กวาดเก็บ Error Handling (Database ล่ม)", () => {
+    it("ควรคืนค่า 500 เมื่อ DB พังตอนเช็คสถานะการสมัคร", async () => {
+      // แกล้งทำให้ DB พัง (mockRejectedValueOnce จะพังแค่รอบเดียว)
+      pool.query.mockRejectedValueOnce(new Error("Database Down!"));
+
+      const res = await request(app).get("/api/workshops/1/check-enrollment");
+      expect(res.statusCode).toBe(500);
+    });
+
+    it("ควรคืนค่า 500 เมื่อ DB พังตอนกดยกเลิกการสมัคร", async () => {
+      pool.execute.mockRejectedValueOnce(new Error("Database Down!"));
+
+      const res = await request(app).patch("/api/workshops/1/cancel");
+      expect(res.statusCode).toBe(500);
+    });
+
+    it("ควรคืนค่า 500 เมื่อ DB พังตอนแก้ไข Workshop", async () => {
+      pool.execute.mockRejectedValueOnce(new Error("Database Down!"));
+
+      const res = await request(app).put("/api/workshops/1").send({
+        name: "Test",
+        date: "2026-05-01",
+        startTime: "10:00",
+        location: "Zoom",
+        seats: 50,
+        categoryId: 1,
+        platformId: 1,
+      });
+      expect(res.statusCode).toBe(500);
+    });
+
+    it("ควรคืนค่า 500 เมื่อ DB พังตอนสร้าง Workshop ใหม่", async () => {
+      pool.execute.mockRejectedValueOnce(new Error("Database Down!"));
+
+      const res = await request(app).post("/api/workshops").send({
+        name: "Test",
+        date: "2026-05-01",
+        startTime: "10:00",
+        location: "Zoom",
+        seats: 50,
+        categoryId: 1,
+        platformId: 1,
+      });
+      expect(res.statusCode).toBe(500);
+    });
+
+    it("ควรคืนค่า 500 เมื่อ DB พังตอนเปลี่ยนสถานะ Approve/Reject", async () => {
+      pool.query.mockRejectedValueOnce(new Error("Database Down!"));
+
+      const res = await request(app)
+        .patch("/api/workshops/1/status")
+        .send({ status: "approved" });
+      expect(res.statusCode).toBe(500);
+    });
+  });
 });
