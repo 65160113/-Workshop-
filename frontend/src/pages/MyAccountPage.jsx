@@ -137,26 +137,29 @@ export default function MyAccountPage() {
                         colSpan="3"
                         className="py-12 text-center text-gray-500 bg-sky-50/30"
                       >
-                        คุณยังไม่ได้ลงทะเบียน Workshop ใดๆ ครับ 
+                        คุณยังไม่ได้ลงทะเบียน Workshop ใดๆ ครับ
                       </td>
                     </tr>
                   ) : (
                     myWorkshops.map((ws, index) => (
                       <tr
                         key={ws.id}
-                        className={
+                        onClick={() => navigate(`/workshop/${ws.id}`)}
+                        className={`cursor-pointer transition-colors ${
                           index % 2 === 0
-                            ? "bg-sky-50/60 hover:bg-sky-100 transition-colors"
-                            : "bg-white hover:bg-sky-50 transition-colors"
-                        }
+                            ? "bg-sky-50/60 hover:bg-sky-200" // เข้มขึ้นนิดนึงตอน Hover ให้รู้ว่ากดได้
+                            : "bg-white hover:bg-sky-100"
+                        }`}
                       >
-                        <td className="py-4 border-r border-sky-100 font-medium">
+                        <td className="py-4 border-r border-sky-100 font-medium text-sky-700 underline-offset-4 hover:underline">
                           {ws.name}
                         </td>
                         <td className="py-4 border-r border-sky-100">
                           {ws.date}
                         </td>
-                        <td className="py-4 text-green-600 font-bold">
+                        <td
+                          className={`py-4 font-bold ${ws.status === "Registered" ? "text-green-600" : "text-red-500"}`}
+                        >
                           {ws.status}
                         </td>
                       </tr>

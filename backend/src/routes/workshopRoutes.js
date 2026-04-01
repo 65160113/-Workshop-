@@ -64,4 +64,17 @@ router.put(
   workshopController.updateWorkshop,
 );
 
+// ยกเลิกการสมัคร Workshop (ใช้ PATCH เพราะเป็นการอัปเดต status)
+router.patch(
+  "/:id/cancel",
+  verifyToken,
+  workshopController.cancelEnrollment
+);
+
+router.get(
+  "/:id/check-enrollment",
+  verifyToken,
+  workshopController.checkEnrollmentStatus,
+);
+
 module.exports = router;

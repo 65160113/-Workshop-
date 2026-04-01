@@ -6,7 +6,7 @@ const { pool } = require("../config/db.config");
 class WorkshopController {
   async getAllWorkshops(req, res) {
     try {
-      // 🌟 อัปเกรด SQL: เพิ่ม enrolled_count สำหรับหน้า Home ด้วย!
+      // อัปเกรด SQL: เพิ่ม enrolled_count สำหรับหน้า Home ด้วย!
       const [workshops] = await pool.query(`
         SELECT w.workshop_id as id, 
                w.title as name, 
@@ -14,7 +14,7 @@ class WorkshopController {
                DATE_FORMAT(w.start_time, '%d %M %Y') as date, 
                w.max_seats as seats,
                w.category_id,
-               (SELECT COUNT(*) FROM enrollments e WHERE e.workshop_id = w.workshop_id) as enrolled_count
+               (SELECT COUNT(*) FROM enrollments e WHERE e.workshop_id = w.workshop_id AND e.status = 'active') as enrolled_count
         FROM workshops w 
         WHERE w.status = 'approved'
         ORDER BY w.start_time ASC
@@ -32,7 +32,7 @@ class WorkshopController {
     try {
       const { id } = req.params; // รับ ID มาจาก URL
 
-      // 🌟 อัปเกรดคำสั่ง SQL: ดึงครบทั้ง หมวดหมู่, แพลตฟอร์ม, และยอดคนจอง
+      // อัปเกรดคำสั่ง SQL: ดึงครบทั้ง หมวดหมู่, แพลตฟอร์ม, และยอดคนจอง
       const [workshops] = await pool.query(
         `
         SELECT w.workshop_id as id, 
@@ -54,7 +54,7 @@ class WorkshopController {
                DATE_FORMAT(w.start_time, '%H:%i') as raw_start_time,
                DATE_FORMAT(w.end_time, '%H:%i') as raw_end_time,
                
-               (SELECT COUNT(*) FROM enrollments e WHERE e.workshop_id = w.workshop_id) as enrolled_count
+               (SELECT COUNT(*) FROM enrollments e WHERE e.workshop_id = w.workshop_id AND e.status = 'active') as enrolled_count
         FROM workshops w
         LEFT JOIN categories c ON w.category_id = c.category_id
         LEFT JOIN platforms p ON w.platform_id = p.platform_id
@@ -112,7 +112,7 @@ class WorkshopController {
       const status = "pending"; // หรือ 'approved'
       const organizer_id = req.user.id;
 
-      // 4. สั่งร่ายเวทย์ SQL ให้ตรงกับชื่อคอลัมน์ในรูปเป๊ะๆ!
+      // 4. สั่ง SQL ให้ตรงกับชื่อคอลัมน์ในรูปเป๊ะๆ!
       const [result] = await pool.execute(
         `INSERT INTO workshops 
          (title, description, speaker_name, start_time, end_time, max_seats, location_detail, status, organizer_id, category_id, platform_id) 
@@ -133,7 +133,7 @@ class WorkshopController {
       );
 
       res.status(201).json({
-        message: "🎉 สร้าง Workshop สำเร็จแล้วครับลูกพี่!",
+        message: "สร้าง Workshop สำเร็จแล้ว",
         insertId: result.insertId,
       });
     } catch (error) {
@@ -242,7 +242,7 @@ class WorkshopController {
     }
   }
 
-  // 🌟 2. อัปเดตสถานะ (Approve / Reject)
+  // อัปเดตสถานะ (Approve / Reject)
   async updateWorkshopStatus(req, res) {
     try {
       const { id } = req.params; // รับ ID ของงานจาก URL
@@ -271,7 +271,7 @@ class WorkshopController {
       res.status(500).json({ message: "เกิดข้อผิดพลาดในการอัปเดตสถานะ" });
     }
   }
-  // 🌟 ฟังก์ชันดึงเฉพาะงานที่ "ฉัน" (Organizer) เป็นคนสร้าง
+  // ฟังก์ชันดึงเฉพาะงานที่ "ฉัน" (Organizer) เป็นคนสร้าง
   async getMyWorkshops(req, res) {
     try {
       // req.user.id ได้มาจาก verifyToken ตอนล็อคอิน
@@ -319,6 +319,56 @@ class WorkshopController {
       res
         .status(500)
         .json({ message: "เกิดข้อผิดพลาดในการดึงรายชื่อผู้สมัคร" });
+    }
+  }
+  async cancelEnrollment(req, res) {
+    try {
+      const { id } = req.params; // รับ workshop_id จาก URL
+      const userId = req.user.id; // รับ user_id จากคนที่ล็อคอินอยู่ (verifyToken)
+
+      // สั่งเปลี่ยนสถานะจาก active เป็น cancelled
+      const [result] = await pool.execute(
+        `UPDATE enrollments 
+         SET status = 'cancelled' 
+         WHERE workshop_id = ? AND user_id = ? AND status = 'active'`,
+        [id, userId],
+      );
+
+      // เช็คว่ามีการอัปเดตเกิดขึ้นจริงไหม (ป้องกันการกดยกเลิกซ้ำ หรือยกเลิกงานที่ไม่ได้สมัคร)
+      if (result.affectedRows === 0) {
+        return res
+          .status(400)
+          .json({ message: "ไม่พบข้อมูลการสมัคร หรือคุณได้ยกเลิกไปแล้วครับ" });
+      }
+
+      res
+        .status(200)
+        .json({ message: "ยกเลิกการเข้าร่วมเวิร์กชอปสำเร็จแล้วครับ" });
+    } catch (error) {
+      console.error("Cancel Enrollment Error:", error.message);
+      res.status(500).json({
+        message: "เกิดข้อผิดพลาดในการยกเลิกการสมัคร Database มีปัญหา",
+      });
+    }
+  }
+  // ฟังก์ชันเช็คว่า User ล็อคอินคนนี้ สมัครงานนี้หรือยัง จะทำสลับปุ่มยกเลิกถ้าสมัครไปแล้ว
+  async checkEnrollmentStatus(req, res) {
+    try {
+      const { id } = req.params; // workshop_id
+      const userId = req.user.id; // user_id จาก token
+
+      const [enrollment] = await pool.query(
+        "SELECT * FROM enrollments WHERE workshop_id = ? AND user_id = ? AND status = 'active'",
+        [id, userId],
+      );
+
+      // ถ้าเจอข้อมูลแปลว่าสมัครแล้ว (true) ถ้าไม่เจอคือยังไม่สมัคร (false)
+      const isEnrolled = enrollment.length > 0;
+
+      res.status(200).json({ isEnrolled });
+    } catch (error) {
+      console.error("Check Enrollment Error:", error);
+      res.status(500).json({ message: "เกิดข้อผิดพลาดในการตรวจสอบสถานะ" });
     }
   }
 }

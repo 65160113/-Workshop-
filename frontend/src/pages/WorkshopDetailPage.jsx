@@ -1,5 +1,5 @@
 // frontend/src/pages/WorkshopDetailPage.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
@@ -9,13 +9,44 @@ const API_URL = import.meta.env.VITE_API_URL;
 export default function WorkshopDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [workshop, setWorkshop] = useState(null);
-  const [loading, setLoading] = useState(true);
   const location = useLocation();
 
-  // เพิ่ม State ไว้เก็บข้อมูลของคนที่ล็อคอิน
+  const [workshop, setWorkshop] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isEnrolled, setIsEnrolled] = useState(false); // State เช็คการสมัคร
+
   const [currentUserRole, setCurrentUserRole] = useState(null);
   const [currentUserId, setCurrentUserId] = useState(null);
+
+  // ฟังก์ชันดึงรายละเอียดงาน (แยกออกมาเพื่อให้เรียกใช้ซ้ำตอนกดปุ่มได้)
+  const fetchDetail = useCallback(async () => {
+    try {
+      const res = await axios.get(`${API_URL}/api/workshops/${id}`);
+      setWorkshop(res.data);
+    } catch (error) {
+      console.error("Error fetching detail:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  // ฟังก์ชันเช็คว่าเคยสมัครงานนี้หรือยัง
+  const fetchEnrollmentStatus = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await axios.get(
+        `${API_URL}/api/workshops/${id}/check-enrollment`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      setIsEnrolled(res.data.isEnrolled);
+    } catch (err) {
+      console.error("Error checking status:", err);
+    }
+  }, [id]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -24,36 +55,22 @@ export default function WorkshopDetailPage() {
       return;
     }
 
-    // แอบแกะ Token เพื่อดู Role และ ID ของคนที่ล็อคอินอยู่
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
       setCurrentUserRole(payload.role);
-      setCurrentUserId(payload.id); 
+      setCurrentUserId(payload.id);
     } catch (error) {
       console.error("Token decoding error:", error);
     }
 
-    const fetchDetail = async () => {
-      try {
-        const res = await axios.get(`${API_URL}/api/workshops/${id}`);
-        setWorkshop(res.data);
-      } catch (error) {
-        console.error("Error fetching detail:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchDetail();
-  }, [id, navigate, location.pathname]);
+    fetchEnrollmentStatus();
 
+  }, [navigate, location.pathname, fetchDetail, fetchEnrollmentStatus]);
+
+  // ฟังก์ชันกดสมัครเข้าร่วม
   const handleRegisterClick = async () => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      alert("กรุณาเข้าสู่ระบบก่อนลงทะเบียน Workshop ครับ");
-      navigate("/login");
-      return;
-    }
-
     try {
       await axios.post(
         `${API_URL}/api/enrollments`,
@@ -62,9 +79,37 @@ export default function WorkshopDetailPage() {
       );
 
       alert(`ยืนยันการลงทะเบียน: ${workshop.name} สำเร็จ!`);
-      navigate("/my-account");
+      setIsEnrolled(true); // เปลี่ยนปุ่มเป็นยกเลิกทันที
+      fetchDetail(); // โหลดข้อมูลใหม่เพื่ออัปเดตยอดที่นั่ง
+
+      // เอา navigate ออก เพื่อให้อยู่หน้าเดิมและเห็นปุ่มเปลี่ยนสีครับ
+      // navigate("/my-account");
     } catch (error) {
       alert(error.response?.data?.message || "เกิดข้อผิดพลาดในการลงทะเบียน");
+    }
+  };
+
+  // ฟังก์ชันกดยกเลิกการสมัคร (ซ่อมปีกกาให้แล้วครับ)
+  const handleCancelEnrollment = async (workshopId) => {
+    const isConfirm = window.confirm(
+      "คุณแน่ใจหรือไม่ที่จะยกเลิกการเข้าร่วมเวิร์กชอปนี้?",
+    );
+    if (!isConfirm) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.patch(
+        `${API_URL}/api/workshops/${workshopId}/cancel`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      alert("✅ " + res.data.message);
+      setIsEnrolled(false); // เปลี่ยนปุ่มกลับเป็นสีฟ้าให้สมัครใหม่ได้
+      fetchDetail(); // โหลดข้อมูลใหม่เพื่อคืนที่นั่ง
+    } catch (err) {
+      console.error("Error canceling enrollment:", err);
+      alert(err.response?.data?.message || "เกิดข้อผิดพลาด ไม่สามารถยกเลิกได้");
     }
   };
 
@@ -81,9 +126,9 @@ export default function WorkshopDetailPage() {
       </div>
     );
 
-  // ลอจิกสำหรับตัดสินใจว่าจะโชว์ปุ่มอะไร?
+  // ลอจิกปุ่มกด (ประกอบร่างสมบูรณ์)
   const renderActionButton = () => {
-    // 1. ถ้าเป็น Admin หรือ Approver -> โชว์ข้อความเฉยๆ ไม่ให้กด
+    // 1. Admin/Approver ลงทะเบียนไม่ได้
     if (currentUserRole === "admin" || currentUserRole === "approver") {
       return (
         <div className="text-center text-sky-800 font-semibold bg-sky-50 p-4 rounded-xl border border-sky-200">
@@ -94,23 +139,33 @@ export default function WorkshopDetailPage() {
       );
     }
 
-    // 2. ถ้าเป็น Organizer และเป็นคนสร้างงานนี้เอง! -> โชว์ข้อความว่าเป็นผู้จัด
-    // (ตอนแก้ Backend เราเพิ่ม w.organizer_id ส่งมาด้วยแล้ว)
+    // 2. Organizer สร้างเอง ลงเองนักเลงพอ (ไม่ได้!)
     if (
       currentUserRole === "organizer" &&
       currentUserId === workshop.organizer_id
     ) {
       return (
         <div className="text-center text-amber-600 font-semibold bg-amber-50 p-4 rounded-xl border border-amber-200">
-          🛠️ คุณคือผู้จัดงาน (Organizer) ของ Workshop นี้
+          คุณคือผู้จัดงาน (Organizer) ของ Workshop นี้
           <br />
           (ระบบสงวนสิทธิ์ไม่ให้ผู้จัดงานลงทะเบียนซ้ำครับ)
         </div>
       );
     }
 
-    // 3. ถ้าไม่ใช่ Admin และ ไม่ใช่ Organizer ของงานตัวเอง (นักศึกษา หรือ ออแกไนซ์คนอื่น)
-    // ถึงจะเข้าสู่การเช็คที่นั่งว่างตามปกติ
+    // 3. ถ้าเคยสมัครไปแล้ว -> โชว์ปุ่มยกเลิกสีแดง
+    if (isEnrolled) {
+      return (
+        <button
+          onClick={() => handleCancelEnrollment(workshop.id)}
+          className="btn bg-red-500 text-white hover:bg-red-600 w-full sm:w-64 rounded-full text-xl shadow-md border-none h-14"
+        >
+          ยกเลิกการสมัคร
+        </button>
+      );
+    }
+
+    // 4. ถ้าย้อนกลับมาถึงตรงนี้แปลว่ายังไม่สมัคร -> เช็คที่นั่งว่าง
     if (workshop.seats - (workshop.enrolled_count || 0) > 0) {
       return (
         <button
@@ -121,12 +176,13 @@ export default function WorkshopDetailPage() {
         </button>
       );
     } else {
+      // 5. ที่นั่งเต็ม
       return (
         <button
           disabled
           className="btn bg-gray-300 text-gray-500 w-full sm:w-64 rounded-full text-xl border-none h-14 cursor-not-allowed"
         >
-          ที่นั่งเต็มแล้ว 
+          ที่นั่งเต็มแล้ว
         </button>
       );
     }
@@ -172,7 +228,6 @@ export default function WorkshopDetailPage() {
                 <span className="font-bold w-24 inline-block">Speaker</span> :{" "}
                 {workshop.speaker || "รอประกาศ"}
               </p>
-
               <p>
                 <span className="font-bold w-24 inline-block">Seats</span> :{" "}
                 <span className="text-sky-700 font-semibold">
@@ -194,7 +249,6 @@ export default function WorkshopDetailPage() {
             </div>
           </div>
 
-          {/* เอาฟังก์ชันที่ตัดสินใจแล้วมาวางโชว์ตรงนี้ */}
           <div className="flex justify-center mt-4">{renderActionButton()}</div>
         </div>
       </main>

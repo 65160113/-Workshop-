@@ -61,7 +61,9 @@ graph TD
 ### โครงสร้างรวมของโปรเจกต์ (Project Directory)
 ```text
 Workshop-Management-System/
-├── docs/                       # เอกสาร System Design Document (D2)
+Workshop-Management-System/
+├── .github/                    # ตั้งค่า CI/CD Automated Testing (GitHub Actions)
+├── docs/                       # เอกสาร System Design Document (D2 และ D3)
 ├── frontend/                   # Presentation Layer (React + Vite)
 │   ├── public/                 # ไฟล์ Static ทั่วไปที่ไม่ได้ผ่านการ Build
 │   ├── src/
@@ -84,7 +86,9 @@ Workshop-Management-System/
     │   ├── middleware/         # Cross-cutting Logic ควบคุมสิทธิ์ (authMiddleware.js)
     │   ├── repositories/       # จัดการคำสั่ง SQL โต้ตอบกับ DB โดยตรง (Repository Pattern)
     │   ├── routes/             # จัดการเส้นทาง API Endpoints
-    │   └── services/           # จัดการ Business Logic ที่มีความซับซ้อนสูง
+    │   ├── services/           # จัดการ Business Logic ที่มีความซับซ้อนสูง
+    │   └── utils/              # กล่องเครื่องมือเก็บ Helper Functions อเนกประสงค์
+    ├── tests/                  # โค้ดสำหรับทำ Automated Testing (Unit & Integration Tests)
     ├── .env                    # ตัวแปรสภาพแวดล้อมฝั่งหลังบ้าน (เช่น JWT_SECRET, DB_PASS)
     ├── package.json            # รายการ Dependencies และ Scripts ของ Backend
     └── server.js               # จุดเริ่มต้นการทำงานของ Backend Server
@@ -98,6 +102,10 @@ Workshop-Management-System/
   * รวบรวมฟังก์ชันสำหรับจัดการข้อมูลและ Business Logic เช่น `AdminController` สำหรับจัดการสิทธิ์และสถิติ, `WorkshopController` สำหรับจัดการ CRUD ของกิจกรรม
 * **`Repositories` & `Services`:**
   * แยกส่วนการเขียนคำสั่ง SQL ออกจาก Controller เพื่อให้ดูแลรักษาง่ายและลดความซ้ำซ้อน (ตามหลัก Repository Pattern)
+* **`Utils` (Helper Functions):**
+  * ฟังก์ชันช่วยเหลือย่อยที่ถูกแยกออกมาเพื่อนำไปใช้ซ้ำในหลายๆ Controller (เช่น ฟังก์ชันตรวจสอบรูปแบบข้อมูล, การคำนวณตัวเลข)
+* **`Tests` (Testing Suites):**
+  * ชุดทดสอบระบบอัตโนมัติที่ทำงานร่วมกับไลบรารี Jest และ Supertest เพื่อตรวจสอบความถูกต้องของฟังก์ชัน (Unit Test) และการตอบสนองของ API (Integration Test)
 * **`authMiddleware` (Functions):**
   * `verifyToken(req, res, next)`: ฟังก์ชันถอดรหัส JWT (JSON Web Token) เพื่อยืนยันตัวตนของผู้ใช้
   * `verifyRoles(...allowedRoles)`: คืนค่าเป็น Middleware Function เพื่อตรวจสอบสิทธิ์การเข้าถึงแบบ RBAC (Role-Based Access Control)
