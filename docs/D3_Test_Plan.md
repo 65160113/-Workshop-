@@ -168,7 +168,9 @@ Scenario 7: ระบบล่ม (Error Handling)
 
 * ทดสอบหน่วย: Jest  
 * ทดสอบการผสานระบบ: Supertest / Postman  
-* ทดสอบครบวงจร: Playwright
+* Backend: Node.js / Express.js / JWT
+* Frontend: React / Vite / Tailwind Css
+* Database: MySQL
 
 ตัวชี้วัดการทดสอบ (Test Metrics)
 
