@@ -60,7 +60,7 @@ class AdminController {
       const { role } = req.body; // รับค่า role ใหม่ ('user', 'organizer', 'admin')
 
       // ดักไว้ก่อน เผื่อมีคนส่ง role มั่วๆ มา
-      if (!["user", "organizer", "approver", "admin"].includes(role)) {
+      if (!["student", "organizer", "approver", "admin"].includes(role)) {
         return res
           .status(400)
           .json({ message: "สิทธิ์การใช้งานไม่ถูกต้องครับ" });

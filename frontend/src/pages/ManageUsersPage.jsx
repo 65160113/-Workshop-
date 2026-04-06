@@ -87,7 +87,7 @@ export default function ManageUsersPage() {
                           u.role === "admin"
                             ? "bg-rose-500"
                             : u.role === "approver"
-                              ? "bg-sky-500" 
+                              ? "bg-sky-500"
                               : u.role === "organizer"
                                 ? "bg-amber-500"
                                 : "bg-slate-400"
@@ -102,7 +102,7 @@ export default function ManageUsersPage() {
                         value={u.role}
                         onChange={(e) => handleRoleChange(u.id, e.target.value)}
                       >
-                        <option value="user">STUDENT</option>
+                        <option value="student">STUDENT</option>
                         <option value="organizer">ORGANIZER</option>
                         <option value="approver">APPROVER</option>
                         <option value="admin">ADMIN</option>
