@@ -1,6 +1,8 @@
 # 🎓 University Workshop Registration System
 > ระบบลงทะเบียนอบรมและเวิร์กชอปออนไลน์ (Online Workshop Registration System)
 
+**Live Demo:** [คลิกเพื่อเข้าสู่เว็บไซต์จริง (Vercel)](https://workshop-alpha-brown.vercel.app/)
+
 ## Project Overview (ภาพรวมโครงการ)
 **University Workshop Registration System** เป็นเว็บแอปพลิเคชันแบบ Full-Stack ที่พัฒนาขึ้นเพื่อแก้ปัญหาความยุ่งยากในการลงทะเบียนอบรมแบบเดิม โดยเปลี่ยนมาใช้ระบบออนไลน์ที่เป็นศูนย์กลาง ช่วยให้การจัดการข้อมูลเป็นระบบ ลดความซ้ำซ้อน และอำนวยความสะดวกให้กับทั้งผู้จัดงานและนักศึกษา
 
