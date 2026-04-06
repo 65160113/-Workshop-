@@ -28,7 +28,6 @@ export default function MyAccountPage() {
       setIsLoggedIn(true);
 
       try {
-        // ลองดึงข้อมูล Profile 
         try {
           const profileRes = await axios.get(
             `${API_URL}/api/auth/me`,

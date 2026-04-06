@@ -45,8 +45,6 @@ export default function HomePage() {
     return matchSearch && matchCategory;
   });
 
-  console.log("แอบดูข้อมูล Workshop ตัวแรก:", workshops[0]);
-
   return (
     <div className="min-h-screen flex flex-col bg-base-100">
       <Navbar />

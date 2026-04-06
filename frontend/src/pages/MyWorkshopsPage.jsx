@@ -35,34 +35,31 @@ export default function MyWorkshopsPage() {
     const date = new Date(dateString);
     return date.toLocaleDateString("th-TH", {
       year: "numeric",
-      month: "short", // ใช้ชื่อย่อเพื่อให้ประหยัดพื้นที่
+      month: "short", 
       day: "numeric",
     });
   };
 
   const getStatusBadge = (status) => {
+    const baseStyle =
+      "badge text-white whitespace-nowrap px-3 py-3 w-28 justify-center shadow-sm font-medium";
+
     switch (status) {
       case "approved":
         return (
-          <span className="badge badge-success text-white whitespace-nowrap px-3 py-3">
-            🟢 อนุมัติแล้ว
-          </span>
+          <span className={`${baseStyle} badge-success`}>อนุมัติแล้ว</span>
         );
       case "pending":
-        return (
-          <span className="badge badge-warning text-white whitespace-nowrap px-3 py-3">
-            🟡 รอตรวจสอบ
-          </span>
-        );
+        return <span className={`${baseStyle} badge-warning`}>รอตรวจสอบ</span>;
       case "rejected":
-        return (
-          <span className="badge badge-error text-white whitespace-nowrap px-3 py-3">
-            🔴 ไม่อนุมัติ
-          </span>
-        );
+        return <span className={`${baseStyle} badge-error`}>ไม่อนุมัติ</span>;
       default:
         return (
-          <span className="badge whitespace-nowrap px-3 py-3">{status}</span>
+          <span
+            className={`badge whitespace-nowrap px-3 py-3 w-28 justify-center`}
+          >
+            {status}
+          </span>
         );
     }
   };
@@ -140,7 +137,6 @@ export default function MyWorkshopsPage() {
                     </td>
                     <td>{getStatusBadge(ws.status)}</td>
                     <td className="text-center">
-                      {/* เติม flex-wrap เผื่อหน้าจอแคบ ปุ่มจะได้เรียงลงมาข้างล่างแทนที่จะพัง */}
                       <div className="flex flex-wrap gap-2 justify-center">
                         <Link
                           to={`/workshop/${ws.id}/attendees`}

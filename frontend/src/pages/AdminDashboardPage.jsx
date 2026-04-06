@@ -62,7 +62,7 @@ export default function AdminDashboardPage() {
     if (!isConfirm) return;
 
     try {
-      // 1. ควักบัตร Token ออกมาจากกระเป๋า (localStorage)
+      // 1. ควักบัตร Token ออกมาจากกระเป๋า 
       const token = localStorage.getItem("token");
 
       // 2. ยื่นบัตร (Headers) ไปพร้อมกับการอัปเดตข้อมูล

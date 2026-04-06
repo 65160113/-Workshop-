@@ -15,7 +15,6 @@ export default function CreateWorkshopPage() {
   const [categories, setCategories] = useState([]);
   const [platforms, setPlatforms] = useState([]);
 
-  // เพิ่ม categoryId และ platformId ในกล่องเก็บข้อมูลฟอร์ม
   const [formData, setFormData] = useState({
     name: "",
     categoryId: "",
@@ -29,7 +28,6 @@ export default function CreateWorkshopPage() {
     description: "",
   });
 
-  // ใช้ useEffect ดึงข้อมูลยศ (ของเดิม) + ดึงข้อมูล Dropdown (ของใหม่)
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -46,7 +44,7 @@ export default function CreateWorkshopPage() {
           "เฉพาะผู้จัดอบรมหรือแอดมินเท่านั้น ที่สามารถสร้าง Workshop ได้ครับ",
         );
         navigate("/");
-        return; // เด้งแล้วจบการทำงานเลย
+        return; 
       }
     } catch (error) {
       console.error("Token error:", error);
@@ -86,7 +84,7 @@ export default function CreateWorkshopPage() {
     setIsSubmitting(true);
 
     try {
-      // ล้วงกระเป๋าหยิบ Token ออกมาก่อน
+      // หยิบ Token ออกมาก่อน
       const token = localStorage.getItem("token");
       if (!token) {
         alert("กรุณาเข้าสู่ระบบก่อนครับ");
@@ -101,7 +99,7 @@ export default function CreateWorkshopPage() {
         date: formData.date,
         startTime: formData.startTime,
         endTime: formData.endTime,
-        location: formData.location, // หมายถึง ลิงก์ห้องประชุม หรือ ชื่อตึก
+        location: formData.location, 
         speaker: formData.speaker,
         seats: formData.seats,
         description: formData.description,

@@ -92,7 +92,7 @@ export default function EditWorkshopPage() {
       });
 
       alert("อัปเดตข้อมูล Workshop สำเร็จ!");
-      navigate("/my-workshops"); // กลับไปหน้างานของฉัน
+      navigate("/my-workshops"); 
     } catch (error) {
       setErrorMsg(error.response?.data?.message || "เกิดข้อผิดพลาดในการอัปเดต");
     } finally {

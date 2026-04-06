@@ -13,7 +13,6 @@ export default function LoginPage() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  // แกะกระเป๋าดูว่ามีพิกัดแนบมาไหม ถ้าไม่มีให้ตั้งค่าเริ่มต้นเป็น "/" (หน้า Home)
   const from = location.state?.from || "/";
 
   const handleLogin = async (e) => {
@@ -33,10 +32,8 @@ export default function LoginPage() {
       localStorage.setItem("token", token);
       localStorage.setItem("role", res.data.user.role);
 
-      // ลบ alert ทิ้งไปเลยครับ เพื่อตัดปัญหาเบราว์เซอร์บล็อค
       navigate(from);
     } catch (err) {
-      console.error("พังจ้าาา เจอ Error:", err);
       setErrorMsg(
         err.response?.data?.message || "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้",
       );

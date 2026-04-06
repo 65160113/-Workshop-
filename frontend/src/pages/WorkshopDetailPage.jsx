@@ -82,14 +82,12 @@ export default function WorkshopDetailPage() {
       setIsEnrolled(true); // เปลี่ยนปุ่มเป็นยกเลิกทันที
       fetchDetail(); // โหลดข้อมูลใหม่เพื่ออัปเดตยอดที่นั่ง
 
-      // เอา navigate ออก เพื่อให้อยู่หน้าเดิมและเห็นปุ่มเปลี่ยนสีครับ
-      // navigate("/my-account");
     } catch (error) {
       alert(error.response?.data?.message || "เกิดข้อผิดพลาดในการลงทะเบียน");
     }
   };
 
-  // ฟังก์ชันกดยกเลิกการสมัคร (ซ่อมปีกกาให้แล้วครับ)
+  // ฟังก์ชันกดยกเลิกการสมัคร 
   const handleCancelEnrollment = async (workshopId) => {
     const isConfirm = window.confirm(
       "คุณแน่ใจหรือไม่ที่จะยกเลิกการเข้าร่วมเวิร์กชอปนี้?",
@@ -139,7 +137,7 @@ export default function WorkshopDetailPage() {
       );
     }
 
-    // 2. Organizer สร้างเอง ลงเองนักเลงพอ (ไม่ได้!)
+    // 2. Organizer สร้างเอง ลงเอง (ไม่ได้!)
     if (
       currentUserRole === "organizer" &&
       currentUserId === workshop.organizer_id

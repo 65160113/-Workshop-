@@ -32,9 +32,7 @@ export default function WorkshopAttendeesPage() {
     fetchAttendees();
   }, [id]);
 
-  
-
-  // ฟังก์ชันไม้ตาย: แปลงข้อมูลตารางเป็นไฟล์ CSV และโหลดลงเครื่อง (รองรับภาษาไทย)
+  // แปลงข้อมูลตารางเป็นไฟล์ CSV และโหลดลงเครื่อง (รองรับภาษาไทย)
   const handleExportCSV = () => {
     // 1. สร้างหัวตาราง
     const headers = ["ลำดับ,ชื่อ-นามสกุล,อีเมล,วันที่สมัคร"];

@@ -87,7 +87,7 @@ export default function ManageUsersPage() {
                           u.role === "admin"
                             ? "bg-rose-500"
                             : u.role === "approver"
-                              ? "bg-sky-500" /* 🌟 เพิ่มสีฟ้าให้ Approver */
+                              ? "bg-sky-500" 
                               : u.role === "organizer"
                                 ? "bg-amber-500"
                                 : "bg-slate-400"
