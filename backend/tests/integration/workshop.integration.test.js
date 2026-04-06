@@ -34,7 +34,7 @@ app.use("/api/workshops", workshopRoutes);
 // =======================
 // เริ่มต้นการทดสอบ 12 Suites 
 // =======================
-describe("🔗 Workshop API Integration Tests", () => {
+describe("Workshop API Integration Tests", () => {
   // ล้างค่า Mock ทุกครั้งก่อนเริ่มเทสใหม่
   beforeEach(() => {
     jest.clearAllMocks();
@@ -43,7 +43,7 @@ describe("🔗 Workshop API Integration Tests", () => {
   // Suite 1: ทดสอบการดึง Workshop ทั้งหมด (หน้า Home)
   describe("Suite 1: GET /api/workshops", () => {
     it("ควรคืนค่า 200 และส่งข้อมูล Workshop กลับมาเป็น Array", async () => {
-      // สะกดจิต DB ให้คืนค่า Array จำลอง
+      // ทำ DB ให้คืนค่า Array จำลอง
       pool.query.mockResolvedValue([[{ id: 1, name: "React Basic" }]]);
 
       const res = await request(app).get("/api/workshops");

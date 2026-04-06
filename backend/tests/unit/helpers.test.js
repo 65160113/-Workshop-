@@ -5,7 +5,7 @@ const {
   isWorkshopFull,
 } = require("../../src/utils/helpers");
 
-describe("🛠️ Helpers Utility Unit Tests", () => {
+describe("Helpers Utility Unit Tests", () => {
   // ==========================================
   // ชุดที่ 1: เทสฟังก์ชันตรวจสอบอีเมล (isValidEmail)
   // ==========================================
