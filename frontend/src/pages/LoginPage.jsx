@@ -20,13 +20,10 @@ export default function LoginPage() {
     setErrorMsg("");
 
     try {
-      const res = await axios.post(
-        `${API_URL}/api/auth/login`,
-        {
-          username,
-          password,
-        },
-      );
+      const res = await axios.post(`${API_URL}/api/auth/login`, {
+        username,
+        password,
+      });
 
       const token = res.data.token;
       localStorage.setItem("token", token);
@@ -40,80 +37,92 @@ export default function LoginPage() {
     }
   };
 
-  return (
-    <div className="min-h-screen flex flex-col bg-base-100">
-      <Navbar />
+  const inputStyle =
+    "w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-slate-700 font-medium";
 
-      {/* Main Content (Centered Login Card) */}
-      <main className="grow flex items-center justify-center p-4">
-        <div className="card w-96 bg-sky-100 shadow-2xl border border-sky-200 p-8 rounded-2xl">
-          <h1 className="text-center text-3xl font-bold text-sky-900 mb-8">
-            Login
-          </h1>
+  return (
+    <div className="min-h-screen flex flex-col bg-slate-50 font-sans relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden flex justify-center items-center z-0">
+        <div className="absolute w-[500px] h-[500px] bg-indigo-200/40 rounded-full blur-3xl -top-32 -left-32"></div>
+        <div className="absolute w-[400px] h-[400px] bg-sky-200/40 rounded-full blur-3xl bottom-10 -right-20"></div>
+      </div>
+
+      <div className="z-10 w-full">
+        <Navbar />
+      </div>
+
+      {/* Main Content */}
+      <main className="grow flex items-center justify-center p-4 z-10">
+        {/* Login Card */}
+        <div className="w-full max-w-md bg-white shadow-2xl shadow-indigo-100/50 border border-slate-100 p-8 md:p-10 rounded-3xl relative">
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-sky-400"></div>
+
+          <div className="text-center mb-8 mt-2">
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+              Welcome Back
+            </h1>
+            <p className="text-slate-500 mt-2 text-sm">
+              เข้าสู่ระบบเพื่อดำเนินการต่อ
+            </p>
+          </div>
 
           {errorMsg && (
-            <div className="alert alert-error text-sm p-3 rounded-lg mb-4">
-              <span>{errorMsg}</span>
+            <div className="bg-rose-50 border border-rose-200 text-rose-700 text-sm p-4 rounded-2xl flex items-center gap-3 mb-6 font-medium">
+              {errorMsg}
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="form-control w-full">
-              <label className="label p-1">
-                <span className="label-text font-semibold text-sky-800">
-                  Username
-                </span>
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div>
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 pl-1">
+                Username
               </label>
               <input
                 type="text"
                 placeholder="กรอก username ของคุณ"
-                className="input input-bordered w-full bg-white border-sky-300 focus:border-sky-500 focus:ring-sky-500"
+                className={inputStyle}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>
 
-            <div className="form-control w-full">
-              <label className="label p-1">
-                <span className="label-text font-semibold text-sky-800">
-                  Password
-                </span>
+            <div>
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 pl-1">
+                Password
               </label>
               <input
                 type="password"
                 placeholder="กรอกรหัสผ่าน"
-                className="input input-bordered w-full bg-white border-sky-300 focus:border-sky-500 focus:ring-sky-500"
+                className={inputStyle}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
 
-            <div className="form-control mt-8">
+            <div className="pt-4">
               <button
                 type="submit"
-                className="btn bg-sky-600 text-white hover:bg-sky-700 w-full rounded-full text-lg shadow-md border-none"
+                className="w-full py-3.5 rounded-xl font-black text-white text-lg transition-all shadow-md bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:-translate-y-0.5 flex justify-center items-center gap-2"
               >
-                Login
+                Sign In <span>→</span>
               </button>
             </div>
 
-            <div className="text-center mt-4 text-sm text-sky-800">
+            <div className="text-center mt-6 text-sm text-slate-500">
               ยังไม่มีบัญชีใช่ไหม?{" "}
               <Link
                 to="/register"
-                state={{ from: from }} // แนบพิกัดไปหน้า Register
-                className="text-sky-600 font-bold hover:text-sky-800 transition underline"
+                state={{ from: from }}
+                className="text-indigo-600 font-bold hover:text-indigo-800 transition-colors underline underline-offset-4"
               >
-                สมัครสมาชิกเลย!
+                สมัครสมาชิกเลย
               </Link>
             </div>
           </form>
         </div>
       </main>
-
-      <footer className="h-16 bg-sky-200 mt-auto"></footer>
     </div>
   );
 }
