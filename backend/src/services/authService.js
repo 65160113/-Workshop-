@@ -51,7 +51,7 @@ class AuthService {
     };
 
     const secretKey = process.env.JWT_SECRET || "super_secret_key";
-    const token = jwt.sign(payload, secretKey, { expiresIn: "1d" });
+    const token = jwt.sign(payload, secretKey, { expiresIn: "30d" });
 
     return { user: payload, token };
   }

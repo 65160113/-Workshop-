@@ -30,7 +30,9 @@ export default function WorkshopDetailPage() {
 
   const fetchDetail = useCallback(async () => {
     try {
-      const res = await axios.get(`${API_URL}/api/workshops/${id}`);
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/workshops/${id}`,
+      );
       setWorkshop(res.data);
     } catch (error) {
       console.error("Error fetching detail:", error);
